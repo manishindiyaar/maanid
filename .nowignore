@@ -1,0 +1,10 @@
+README.md
+.git
+*.log
+node_modules
+.env.local
+.env.development
+.env.test
+*.bak
+src/lib/ai/tests/
+.github/ 
