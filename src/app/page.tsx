@@ -12,8 +12,8 @@ import { CopilotBoxDemo } from "./../components/CopilotBox";
 import TransparencyLayer from './../components/TransparencyLayer';
 import HeroWithScroller from './../components/HeroWithScroller';
 import SocialProofQuote from './../components/SocialProofQuote';
-import ExperimentalContact from '@/components/ExperimentalContact';
-import FAQSection from '@/components/FAQsection';
+import ExperimentalContact from './../components/ExperimentalContact';
+import FAQSection from './../components/FAQsection';
 import Link from 'next/link';
 
 export default function LandingPage() {
