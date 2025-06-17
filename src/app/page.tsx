@@ -24,14 +24,16 @@ export default function LandingPage() {
   
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+
+      We are still building.......
+      {/* <Navbar /> */}
 
        {/* Hero Section */}
-       <Hero />
+       {/* <Hero /> */}
 
 
       {/* Cinematic Hero with Scroller */}
-      <HeroWithScroller />
+      {/* <HeroWithScroller /> */}
 
 
  <div className='mt-10'></div>
@@ -40,18 +42,18 @@ export default function LandingPage() {
       <TransparencyLayer />
 
       {/* Social Proof Quote */}
-      <SocialProofQuote />
+      {/* <SocialProofQuote /> */}
 
 
-      <CopilotBoxDemo />
+      {/* <CopilotBoxDemo /> */}
 
       {/* Bento Features Section */}
-      <FeaturesSectionDemo />
+      {/* <FeaturesSectionDemo /> */}
 
-      <ExperimentalContact />
+      {/* <ExperimentalContact /> */}
 
 
-      <FAQSection />
+      {/* <FAQSection /> */}
 
       <footer className="container mx-auto max-w-6xl px-4 py-8 border-t border-white/10 mt-12">
         <div className="flex flex-col md:flex-row justify-between items-center">
