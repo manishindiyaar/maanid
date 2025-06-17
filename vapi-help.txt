@@ -1,0 +1,6095 @@
+# Introduction
+
+> Build voice AI agents that can make and receive phone calls
+
+## What is Vapi?
+
+Vapi is the developer platform for building voice AI agents. We handle the complex infrastructure so you can focus on creating great voice experiences.
+
+**Voice agents** allow you to:
+
+* Have natural conversations with users
+* Make and receive phone calls
+* Integrate with your existing systems and APIs
+* Handle complex workflows like appointment scheduling, customer support, and more
+
+## How voice agents work
+
+Every Vapi assistant combines three core technologies:
+
+
+  
+    Converts user speech into text that your agent can understand
+  
+
+  
+    Processes the conversation and generates intelligent responses
+  
+
+  
+    Converts your agent's responses back into natural speech
+  
+
+
+You have full control over each component, with dozens of providers and models to choose from; OpenAI, Anthropic, Google, Deepgram, ElevenLabs, and many, many more.
+
+## Two ways to build voice agents
+
+Vapi offers two main primitives for building voice agents, each designed for different use cases:
+
+
+  
+    
+
+      
+    
+
+
+    **Best for:** Quick kickstart for simple conversations
+
+    
+
+
+    Assistants use a single system prompt to control behavior. Perfect for:
+
+    * Customer support chatbots
+    * Simple question-answering agents
+    * Getting started quickly with minimal setup
+  
+
+  
+    
+
+      
+    
+
+
+    **Best for:** Complex logic and multi-step processes
+
+    
+
+
+    Workflows use visual decision trees and conditional logic. Perfect for:
+
+    * Appointment scheduling with availability checks
+    * Lead qualification with branching questions
+    * Complex customer service flows with escalation
+  
+
+
+## Key capabilities
+
+* **Real-time conversations:** Sub-600ms response times with natural turn-taking
+* **Phone integration:** Make and receive calls on any phone number
+* **Web integration:** Embed voice calls directly in your applications
+* **Tool integration:** Connect to your APIs, databases, and existing systems
+* **Custom workflows:** Build complex multi-step processes with decision trees
+
+## Choose your path
+
+
+  
+    
+
+      
+    
+
+
+    * Create a voice agent for inbound/outbound calls
+    * Build customer support or sales automation
+    * Get started with no coding required
+
+    *Build your first voice agent in 5 minutes using our dashboard.*
+  
+
+  
+    
+
+      
+    
+
+
+    * Add voice capabilities to your web application
+    * Integrate voice chat into your existing product
+    * Build with code and SDKs
+
+    *Embed live voice conversations directly in your app.*
+  
+
+
+## Popular use cases
+
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Assistants
+    
+
+
+    Automate inbound support calls with agents that can access your knowledge base and escalate to humans when needed.
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    Make outbound sales calls, qualify leads, and schedule appointments with sophisticated branching logic.
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    Handle booking requests, check availability, and confirm appointments with conditional routing.
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    Emergency routing and appointment scheduling for healthcare.
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    Order tracking, returns, and customer support workflows.
+  
+
+  
+    
+
+      
+    
+
+
+    See our collection of examples covering a wide range of use cases.
+  
+
+
+
+# Phone calls
+
+> Learn to make your first phone call with a voice agent
+
+## Overview
+
+Vapi makes it easy to build voice agents that can make and receive phone calls. In under 5 minutes, you'll create a voice assistant and start talking to it over the phone.
+
+**In this quickstart, you'll learn to:**
+
+* Create an assistant using the Dashboard or programmatically
+* Set up a phone number
+* Make your first inbound and outbound calls
+
+## Prerequisites
+
+* [A Vapi account](https://dashboard.vapi.ai)
+* For SDK usage: API key from the Dashboard
+
+## Create your first voice assistant
+
+
+  
+    
+      
+        Go to [dashboard.vapi.ai](https://dashboard.vapi.ai) and log in to your account.
+      
+
+      
+        In the dashboard, create a new assistant using the customer support specialist template.
+
+        
+          
+        
+      
+
+      
+        Set the first message and system prompt for your assistant:
+
+        **First message:**
+
+        ```plaintext
+        Hi there, this is Alex from TechSolutions customer support. How can I help you today?
+        ```
+
+        **System prompt:**
+
+        ```plaintext
+        You are Alex, a customer service voice assistant for TechSolutions. Your primary purpose is to help customers resolve issues with their products, answer questions about services, and ensure a satisfying support experience.
+        - Sound friendly, patient, and knowledgeable without being condescending
+        - Use a conversational tone with natural speech patterns
+        - Speak with confidence but remain humble when you don't know something
+        - Demonstrate genuine concern for customer issues
+        ```
+      
+    
+  
+
+  
+    
+      
+        
+          ```bash title="npm"
+          npm install @vapi-ai/server-sdk
+          ```
+
+          ```bash title="yarn"
+          yarn add @vapi-ai/server-sdk
+          ```
+
+          ```bash title="pnpm"
+          pnpm add @vapi-ai/server-sdk
+          ```
+
+          ```bash title="bun"
+          bun add @vapi-ai/server-sdk
+          ```
+        
+      
+
+      
+        ```typescript
+        import { VapiClient } from '@vapi-ai/server-sdk';
+
+        // Initialize the Vapi client
+        const vapi = new VapiClient({
+          token: 'your-api-key', // Replace with your actual API key
+        });
+
+        // Define the system prompt for customer support
+        const systemPrompt = `You are Alex, a customer service voice assistant for TechSolutions. Your primary purpose is to help customers resolve issues with their products, answer questions about services, and ensure a satisfying support experience.
+        - Sound friendly, patient, and knowledgeable without being condescending
+        - Use a conversational tone with natural speech patterns
+        - Speak with confidence but remain humble when you don'\''t know something
+        - Demonstrate genuine concern for customer issues`;
+
+        async function createSupportAssistant() {
+          try {
+            const assistant = await vapi.assistants.create({
+              name: 'Customer Support Assistant',
+              // Configure the AI model
+              model: {
+                provider: 'openai',
+                model: 'gpt-4o',
+                messages: [
+                  {
+                    role: 'system',
+                    content: systemPrompt,
+                  },
+                ],
+              },
+              // Configure the voice
+              voice: {
+                provider: 'playht',
+                voice_id: 'jennifer',
+              },
+              // Set the first message
+              firstMessage: 'Hi there, this is Alex from TechSolutions customer support. How can I help you today?',
+            });
+            
+            console.log('Assistant created:', assistant.id);
+            return assistant;
+          } catch (error) {
+            console.error('Error creating assistant:', error);
+            throw error;
+          }
+        }
+
+        // Create the assistant
+        createSupportAssistant();
+        ```
+      
+    
+  
+
+  
+    
+      
+        ```bash
+        pip install vapi_server_sdk
+        ```
+      
+
+      
+        ```python
+        from vapi import Vapi
+
+        # Initialize the Vapi client
+        client = Vapi(token="your-api-key")  # Replace with your actual API key
+
+        # Define the system prompt for customer support
+        system_prompt = """You are Alex, a customer service voice assistant for TechSolutions. Your primary purpose is to help customers resolve issues with their products, answer questions about services, and ensure a satisfying support experience.
+        - Sound friendly, patient, and knowledgeable without being condescending
+        - Use a conversational tone with natural speech patterns
+        - Speak with confidence but remain humble when you don't know something
+        - Demonstrate genuine concern for customer issues"""
+
+        def create_support_assistant():
+            try:
+                assistant = client.assistants.create(
+                    name="Customer Support Assistant",
+                    # Configure the AI model
+                    model={
+                        "provider": "openai",
+                        "model": "gpt-4o",
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": system_prompt,
+                            }
+                        ],
+                    },
+                    # Configure the voice
+                    voice={
+                        "provider": "playht",
+                        "voice_id": "jennifer",
+                    },
+                    # Set the first message
+                    first_message="Hi there, this is Alex from TechSolutions customer support. How can I help you today?",
+                )
+                
+                print(f"Assistant created: {assistant.id}")
+                return assistant
+            except Exception as error:
+                print(f"Error creating assistant: {error}")
+                raise error
+
+        # Create the assistant
+        create_support_assistant()
+        ```
+      
+    
+  
+
+  
+    
+      
+        ```bash
+        curl -X POST "https://api.vapi.ai/assistant" \
+          -H "Authorization: Bearer your-api-key" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "name": "Customer Support Assistant",
+            "model": {
+              "provider": "openai",
+              "model": "gpt-4o",
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are Alex, a customer service voice assistant for TechSolutions. Your primary purpose is to help customers resolve issues with their products, answer questions about services, and ensure a satisfying support experience.\n- Sound friendly, patient, and knowledgeable without being condescending\n- Use a conversational tone with natural speech patterns\n- Speak with confidence but remain humble when you don'\''t know something\n- Demonstrate genuine concern for customer issues"
+                }
+              ]
+            },
+            "voice": {
+              "provider": "playht",
+              "voice_id": "jennifer"
+            },
+            "firstMessage": "Hi there, this is Alex from TechSolutions customer support. How can I help you today?"
+          }'
+        ```
+      
+    
+  
+
+
+## Set up a phone number
+
+
+  
+    
+      
+        In the Phone Numbers tab, create a free US phone number or import an existing number from another provider.
+
+        
+          
+        
+
+        
+          Free Vapi phone numbers are only available for US national use. For international calls, you'll need to import a number from Twilio or another provider.
+        
+      
+
+      
+        Select your assistant in the inbound settings for your phone number. When this number is called, your assistant will automatically answer.
+
+        
+          
+        
+      
+    
+  
+
+  
+    
+      
+        ```typescript
+        async function purchasePhoneNumber() {
+          try {
+            // Purchase a phone number
+            const phoneNumber = await vapi.phoneNumbers.create({
+              fallbackDestination: {
+                type: 'number',
+                number: '+1234567890', // Your fallback number
+              },
+            });
+            
+            console.log('Phone number created:', phoneNumber.number);
+            return phoneNumber;
+          } catch (error) {
+            console.error('Error creating phone number:', error);
+            throw error;
+          }
+        }
+        ```
+      
+
+      
+        ```typescript
+        async function configureInboundCalls(phoneNumberId: string, assistantId: string) {
+          try {
+            // Update phone number with assistant configuration
+            const updatedNumber = await vapi.phoneNumbers.update(phoneNumberId, {
+              assistantId: assistantId,
+            });
+            
+            console.log('Phone number configured for inbound calls');
+            return updatedNumber;
+          } catch (error) {
+            console.error('Error configuring phone number:', error);
+            throw error;
+          }
+        }
+        ```
+      
+    
+  
+
+  
+    
+      
+        ```python
+        def purchase_phone_number():
+            try:
+                # Purchase a phone number
+                phone_number = client.phone_numbers.create(
+                    fallback_destination={
+                        "type": "number",
+                        "number": "+1234567890",  # Your fallback number
+                    }
+                )
+                
+                print(f"Phone number created: {phone_number.number}")
+                return phone_number
+            except Exception as error:
+                print(f"Error creating phone number: {error}")
+                raise error
+        ```
+      
+
+      
+        ```python
+        def configure_inbound_calls(phone_number_id: str, assistant_id: str):
+            try:
+                # Update phone number with assistant configuration
+                updated_number = client.phone_numbers.update(
+                    phone_number_id,
+                    assistant_id=assistant_id,
+                )
+                
+                print("Phone number configured for inbound calls")
+                return updated_number
+            except Exception as error:
+                print(f"Error configuring phone number: {error}")
+                raise error
+        ```
+      
+    
+  
+
+  
+    
+      
+        ```bash
+        curl -X POST "https://api.vapi.ai/phone-number" \
+          -H "Authorization: Bearer your-api-key" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "fallbackDestination": {
+              "type": "number",
+              "number": "+1234567890"
+            }
+          }'
+        ```
+      
+
+      
+        ```bash
+        curl -X PATCH "https://api.vapi.ai/phone-number/{phone-number-id}" \
+          -H "Authorization: Bearer your-api-key" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "assistantId": "your-assistant-id"
+          }'
+        ```
+      
+    
+  
+
+
+## Make your first calls
+
+
+  
+    Call the phone number you just created. Your assistant will pick up and start the conversation with your configured first message.
+  
+
+  
+    **Using the Dashboard:**
+
+    In the dashboard, go to the outbound calls section:
+
+    1. Enter your own phone number as the target
+    2. Select your assistant
+    3. Click "Make Call"
+
+    
+      
+    
+
+    **Using the SDK:**
+
+    
+      
+        ```typescript
+        async function makeOutboundCall(assistantId: string, phoneNumber: string) {
+          try {
+            const call = await vapi.calls.create({
+              assistant: {
+                assistantId: assistantId,
+              },
+              phoneNumberId: 'your-phone-number-id', // Your Vapi phone number ID
+              customer: {
+                number: phoneNumber, // Target phone number
+              },
+            });
+            
+            console.log('Outbound call initiated:', call.id);
+            return call;
+          } catch (error) {
+            console.error('Error making outbound call:', error);
+            throw error;
+          }
+        }
+
+        // Make a call to your own number for testing
+        makeOutboundCall('your-assistant-id', '+1234567890');
+        ```
+      
+
+      
+        ```python
+        def make_outbound_call(assistant_id: str, phone_number: str):
+            try:
+                call = client.calls.create(
+                    assistant_id=assistant_id,
+                    phone_number_id="your-phone-number-id",  # Your Vapi phone number ID
+                    customer={
+                        "number": phone_number,  # Target phone number
+                    },
+                )
+                
+                print(f"Outbound call initiated: {call.id}")
+                return call
+            except Exception as error:
+                print(f"Error making outbound call: {error}")
+                raise error
+
+        # Make a call to your own number for testing
+        make_outbound_call("your-assistant-id", "+1234567890")
+        ```
+      
+
+      
+        ```bash
+        curl -X POST "https://api.vapi.ai/call" \
+          -H "Authorization: Bearer your-api-key" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "assistant": {
+              "assistantId": "your-assistant-id"
+            },
+            "phoneNumberId": "your-phone-number-id",
+            "customer": {
+              "number": "+1234567890"
+            }
+          }'
+        ```
+      
+    
+
+    Your assistant will call the specified number immediately.
+  
+
+  
+    You can also test your assistant directly in the dashboard by clicking the call button—no phone number required.
+
+    
+      
+    
+  
+
+
+## Next steps
+
+Now that you have a working voice assistant:
+
+* **Customize the conversation:** Update the system prompt to match your use case
+* **Add tools:** Connect your assistant to external APIs and databases
+* **Configure models:** Try different speech and language models for better performance
+* **Scale with APIs:** Use Vapi's REST API to create assistants programmatically
+
+
+  Ready to integrate voice into your application? Check out the [Web integration guide](/quickstart/web-integration) to embed voice calls directly in your app.
+
+
+
+# Web calls
+
+> Build voice interfaces and backend integrations using Vapi's Web and Server SDKs
+
+## Overview
+
+Build powerful voice applications that work across web browsers, mobile apps, and backend systems. This guide covers both client-side voice interfaces and server-side call management using Vapi's comprehensive SDK ecosystem.
+
+**In this quickstart, you'll learn to:**
+
+* Create real-time voice interfaces for web and mobile
+* Build automated outbound and inbound call systems
+* Handle events and webhooks for call management
+* Implement voice widgets and backend integrations
+
+## Choose your integration approach
+
+
+  
+    **Best for:** User-facing applications, voice widgets, mobile apps
+
+    * Browser-based voice assistants and widgets
+    * Real-time voice conversations
+    * Mobile voice applications (iOS, Android, React Native, Flutter)
+    * Direct user interaction with assistants
+  
+
+  
+    **Best for:** Backend automation, bulk operations, system integrations
+
+    * Automated outbound call campaigns
+    * Inbound call routing and management
+    * CRM integrations and bulk operations
+    * Webhook processing and real-time events
+  
+
+
+## Web voice interfaces
+
+Build browser-based voice assistants and widgets for real-time user interaction.
+
+### Installation and setup
+
+
+  
+    Build browser-based voice interfaces:
+
+    
+      ```bash title="npm"
+      npm install @vapi-ai/web
+      ```
+
+      ```bash title="yarn"
+      yarn add @vapi-ai/web
+      ```
+
+      ```bash title="pnpm"
+      pnpm add @vapi-ai/web
+      ```
+
+      ```bash title="bun"
+      bun add @vapi-ai/web
+      ```
+    
+
+    ```typescript
+    import Vapi from '@vapi-ai/web';
+
+    const vapi = new Vapi('YOUR_PUBLIC_API_KEY');
+
+    // Start voice conversation
+    vapi.start('YOUR_ASSISTANT_ID');
+
+    // Listen for events
+    vapi.on('call-start', () => console.log('Call started'));
+    vapi.on('call-end', () => console.log('Call ended'));
+    vapi.on('message', (message) => {
+      if (message.type === 'transcript') {
+        console.log(`${message.role}: ${message.transcript}`);
+      }
+    });
+    ```
+  
+
+  
+    Build voice-enabled mobile apps:
+
+    ```bash
+    npm install @vapi-ai/react-native
+    ```
+
+    ```jsx
+    import { VapiProvider, useVapi } from '@vapi-ai/react-native';
+
+    const VoiceApp = () => {
+      const { start, stop, isConnected } = useVapi();
+
+      return (
+        
+           isConnected ? stop() : start('ASSISTANT_ID')}
+          />
+        
+      );
+    };
+
+    export default () => (
+      
+        
+      
+    );
+    ```
+  
+
+  
+    Create voice apps with Flutter:
+
+    ```yaml
+    dependencies:
+      vapi_flutter: ^1.0.0
+    ```
+
+    ```dart
+    import 'package:vapi_flutter/vapi_flutter.dart';
+
+    class VoiceWidget extends StatefulWidget {
+      @override
+      _VoiceWidgetState createState() => _VoiceWidgetState();
+    }
+
+    class _VoiceWidgetState extends State {
+      final VapiClient _vapi = VapiClient('YOUR_PUBLIC_API_KEY');
+      bool _isConnected = false;
+
+      @override
+      Widget build(BuildContext context) {
+        return ElevatedButton(
+          onPressed: () {
+            if (_isConnected) {
+              _vapi.stop();
+            } else {
+              _vapi.start('YOUR_ASSISTANT_ID');
+            }
+          },
+          child: Text(_isConnected ? 'End Call' : 'Start Call'),
+        );
+      }
+    }
+    ```
+  
+
+  
+    Build native iOS voice apps:
+
+    ```swift
+    import VapiSDK
+
+    class VoiceViewController: UIViewController {
+        private let vapi = VapiClient(apiKey: "YOUR_PUBLIC_API_KEY")
+        
+        @IBAction func startCallTapped(_ sender: UIButton) {
+            vapi.start(assistantId: "YOUR_ASSISTANT_ID")
+        }
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            vapi.delegate = self
+        }
+    }
+
+    extension VoiceViewController: VapiClientDelegate {
+        func vapiCallDidStart() {
+            print("Call started")
+        }
+        
+        func vapiCallDidEnd() {
+            print("Call ended")
+        }
+    }
+    ```
+  
+
+
+### Voice widget implementation
+
+Create a voice widget for your website:
+
+
+  
+    The fastest way to get started. Copy this snippet into your website:
+
+    ```html
+    
+    ```
+  
+
+  
+    Build a complete React voice widget:
+
+    ```tsx
+    import React, { useState, useEffect } from 'react';
+    import Vapi from '@vapi-ai/web';
+
+    interface VapiWidgetProps {
+      apiKey: string;
+      assistantId: string;
+      config?: Record;
+    }
+
+    const VapiWidget: React.FC = ({ 
+      apiKey, 
+      assistantId, 
+      config = {} 
+    }) => {
+      const [vapi, setVapi] = useState(null);
+      const [isConnected, setIsConnected] = useState(false);
+      const [isSpeaking, setIsSpeaking] = useState(false);
+      const [transcript, setTranscript] = useState>([]);
+
+      useEffect(() => {
+        const vapiInstance = new Vapi(apiKey);
+        setVapi(vapiInstance);
+
+        // Event listeners
+        vapiInstance.on('call-start', () => {
+          console.log('Call started');
+          setIsConnected(true);
+        });
+
+        vapiInstance.on('call-end', () => {
+          console.log('Call ended');
+          setIsConnected(false);
+          setIsSpeaking(false);
+        });
+
+        vapiInstance.on('speech-start', () => {
+          console.log('Assistant started speaking');
+          setIsSpeaking(true);
+        });
+
+        vapiInstance.on('speech-end', () => {
+          console.log('Assistant stopped speaking');
+          setIsSpeaking(false);
+        });
+
+        vapiInstance.on('message', (message) => {
+          if (message.type === 'transcript') {
+            setTranscript(prev => [...prev, {
+              role: message.role,
+              text: message.transcript
+            }]);
+          }
+        });
+
+        vapiInstance.on('error', (error) => {
+          console.error('Vapi error:', error);
+        });
+
+        return () => {
+          vapiInstance?.stop();
+        };
+      }, [apiKey]);
+
+      const startCall = () => {
+        if (vapi) {
+          vapi.start(assistantId);
+        }
+      };
+
+      const endCall = () => {
+        if (vapi) {
+          vapi.stop();
+        }
+      };
+
+      return (
+        
+
+          {!isConnected ? (
+            
+ {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(18, 165, 148, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(18, 165, 148, 0.3)';
+              }}
+            >
+              🎤 Talk to Assistant
+            
+          ) : (
+            
+
+              
+
+                
+
+                  
+
+                  
+                    {isSpeaking ? 'Assistant Speaking...' : 'Listening...'}
+                  
+                
+
+                
+                  End Call
+                
+              
+
+              
+              
+
+                {transcript.length === 0 ? (
+                  
+
+                    Conversation will appear here...
+                  
+
+
+                ) : (
+                  transcript.map((msg, i) => (
+                    
+
+                      
+                        {msg.text}
+                      
+                    
+
+                  ))
+                )}
+              
+
+            
+
+          )}
+          
+          
+        
+      );
+    };
+
+    export default VapiWidget;
+
+    // Usage in your app:
+    // 
+    ```
+  
+
+
+## Server-side call management
+
+Automate outbound calls and handle inbound call processing with server-side SDKs.
+
+### Installation and setup
+
+
+  
+    Install the TypeScript Server SDK:
+
+    
+      ```bash title="npm"
+      npm install @vapi-ai/server-sdk
+      ```
+
+      ```bash title="yarn"
+      yarn add @vapi-ai/server-sdk
+      ```
+
+      ```bash title="pnpm"
+      pnpm add @vapi-ai/server-sdk
+      ```
+
+      ```bash title="bun"
+      bun add @vapi-ai/server-sdk
+      ```
+    
+
+    ```typescript
+    import { VapiClient } from "@vapi-ai/server-sdk";
+
+    const vapi = new VapiClient({
+      token: process.env.VAPI_API_KEY!
+    });
+
+    // Create an outbound call
+    const call = await vapi.calls.create({
+      phoneNumberId: "YOUR_PHONE_NUMBER_ID",
+      customer: { number: "+1234567890" },
+      assistantId: "YOUR_ASSISTANT_ID"
+    });
+
+    console.log(`Call created: ${call.id}`);
+    ```
+  
+
+  
+    Install the Python Server SDK:
+
+    ```bash
+    pip install vapi_server_sdk
+    ```
+
+    ```python
+    from vapi import Vapi
+
+    vapi = Vapi(token=os.getenv("VAPI_API_KEY"))
+
+    # Create an outbound call
+    call = vapi.calls.create(
+        phone_number_id="YOUR_PHONE_NUMBER_ID",
+        customer={"number": "+1234567890"},
+        assistant_id="YOUR_ASSISTANT_ID"
+    )
+
+    print(f"Call created: {call.id}")
+    ```
+  
+
+  
+    Add the Java SDK to your project:
+
+    ```xml
+    
+        ai.vapi
+        server-sdk
+        1.0.0
+    
+    ```
+
+    ```java
+    import ai.vapi.VapiClient;
+    import ai.vapi.models.Call;
+
+    VapiClient vapi = VapiClient.builder()
+        .apiKey(System.getenv("VAPI_API_KEY"))
+        .build();
+
+    // Create an outbound call
+    Call call = vapi.calls().create(CreateCallRequest.builder()
+        .phoneNumberId("YOUR_PHONE_NUMBER_ID")
+        .customer(Customer.builder().number("+1234567890").build())
+        .assistantId("YOUR_ASSISTANT_ID")
+        .build());
+
+    System.out.println("Call created: " + call.getId());
+    ```
+  
+
+  
+    Install the Ruby Server SDK:
+
+    ```bash
+    gem install vapi-server-sdk
+    ```
+
+    ```ruby
+    require 'vapi'
+
+    vapi = Vapi::Client.new(api_key: ENV['VAPI_API_KEY'])
+
+    # Create an outbound call
+    call = vapi.calls.create(
+      phone_number_id: "YOUR_PHONE_NUMBER_ID",
+      customer: { number: "+1234567890" },
+      assistant_id: "YOUR_ASSISTANT_ID"
+    )
+
+    puts "Call created: #{call.id}"
+    ```
+  
+
+  
+    Install the C# Server SDK:
+
+    ```bash
+    dotnet add package Vapi.ServerSDK
+    ```
+
+    ```csharp
+    using Vapi;
+
+    var vapi = new VapiClient(Environment.GetEnvironmentVariable("VAPI_API_KEY"));
+
+    // Create an outbound call
+    var call = await vapi.Calls.CreateAsync(new CreateCallRequest
+    {
+        PhoneNumberId = "YOUR_PHONE_NUMBER_ID",
+        Customer = new Customer { Number = "+1234567890" },
+        AssistantId = "YOUR_ASSISTANT_ID"
+    });
+
+    Console.WriteLine($"Call created: {call.Id}");
+    ```
+  
+
+  
+    Install the Go Server SDK:
+
+    ```bash
+    go get github.com/VapiAI/server-sdk-go
+    ```
+
+    ```go
+    package main
+
+    import (
+        "fmt"
+        "os"
+        "github.com/VapiAI/server-sdk-go"
+    )
+
+    func main() {
+        client := vapi.NewClient(os.Getenv("VAPI_API_KEY"))
+
+        // Create an outbound call
+        call, err := client.Calls.Create(&vapi.CreateCallRequest{
+            PhoneNumberID: "YOUR_PHONE_NUMBER_ID",
+            Customer: &vapi.Customer{
+                Number: "+1234567890",
+            },
+            AssistantID: "YOUR_ASSISTANT_ID",
+        })
+
+        if err != nil {
+            panic(err)
+        }
+
+        fmt.Printf("Call created: %s\n", call.ID)
+    }
+    ```
+  
+
+
+### Creating assistants
+
+
+  
+    ```typescript
+    const assistant = await vapi.assistants.create({
+      name: "Sales Assistant",
+      firstMessage: "Hi! I'm calling about your interest in our software solutions.",
+      model: {
+        provider: "openai",
+        model: "gpt-4o",
+        temperature: 0.7,
+        messages: [{
+          role: "system",
+          content: "You are a friendly sales representative. Keep responses under 30 words."
+        }]
+      },
+      voice: {
+        provider: "11labs",
+        voiceId: "21m00Tcm4TlvDq8ikWAM"
+      }
+    });
+    ```
+  
+
+  
+    ```python
+    assistant = vapi.assistants.create(
+        name="Sales Assistant",
+        first_message="Hi! I'm calling about your interest in our software solutions.",
+        model={
+            "provider": "openai",
+            "model": "gpt-4o",
+            "temperature": 0.7,
+            "messages": [{
+                "role": "system",
+                "content": "You are a friendly sales representative. Keep responses under 30 words."
+            }]
+        },
+        voice={
+            "provider": "11labs",
+            "voice_id": "21m00Tcm4TlvDq8ikWAM"
+        }
+    )
+    ```
+  
+
+  
+    ```java
+    Assistant assistant = vapi.assistants().create(CreateAssistantRequest.builder()
+        .name("Sales Assistant")
+        .firstMessage("Hi! I'm calling about your interest in our software solutions.")
+        .model(Model.builder()
+            .provider("openai")
+            .model("gpt-4o")
+            .temperature(0.7)
+            .messages(List.of(Message.builder()
+                .role("system")
+                .content("You are a friendly sales representative. Keep responses under 30 words.")
+                .build()))
+            .build())
+        .voice(Voice.builder()
+            .provider("11labs")
+            .voiceId("21m00Tcm4TlvDq8ikWAM")
+            .build())
+        .build());
+    ```
+  
+
+  
+    ```ruby
+    assistant = vapi.assistants.create(
+      name: "Sales Assistant",
+      first_message: "Hi! I'm calling about your interest in our software solutions.",
+      model: {
+        provider: "openai",
+        model: "gpt-4o",
+        temperature: 0.7,
+        messages: [{
+          role: "system",
+          content: "You are a friendly sales representative. Keep responses under 30 words."
+        }]
+      },
+      voice: {
+        provider: "11labs",
+        voice_id: "21m00Tcm4TlvDq8ikWAM"
+      }
+    )
+    ```
+  
+
+  
+    ```csharp
+    var assistant = await vapi.Assistants.CreateAsync(new CreateAssistantRequest
+    {
+        Name = "Sales Assistant",
+        FirstMessage = "Hi! I'm calling about your interest in our software solutions.",
+        Model = new Model
+        {
+            Provider = "openai",
+            ModelName = "gpt-4o",
+            Temperature = 0.7,
+            Messages = new List
+            {
+                new Message
+                {
+                    Role = "system",
+                    Content = "You are a friendly sales representative. Keep responses under 30 words."
+                }
+            }
+        },
+        Voice = new Voice
+        {
+            Provider = "11labs",
+            VoiceId = "21m00Tcm4TlvDq8ikWAM"
+        }
+    });
+    ```
+  
+
+  
+    ```go
+    assistant, err := client.Assistants.Create(&vapi.CreateAssistantRequest{
+        Name:         "Sales Assistant",
+        FirstMessage: "Hi! I'm calling about your interest in our software solutions.",
+        Model: &vapi.Model{
+            Provider:    "openai",
+            Model:       "gpt-4o",
+            Temperature: 0.7,
+            Messages: []vapi.Message{
+                {
+                    Role:    "system",
+                    Content: "You are a friendly sales representative. Keep responses under 30 words.",
+                },
+            },
+        },
+        Voice: &vapi.Voice{
+            Provider: "11labs",
+            VoiceID:  "21m00Tcm4TlvDq8ikWAM",
+        },
+    })
+    ```
+  
+
+
+### Bulk operations
+
+Run automated call campaigns for sales, surveys, or notifications:
+
+
+  
+    ```typescript
+    async function runBulkCallCampaign(assistantId: string, phoneNumberId: string) {
+      const prospects = [
+        { number: "+1234567890", name: "John Smith" },
+        { number: "+1234567891", name: "Jane Doe" },
+        // ... more prospects
+      ];
+
+      const calls = [];
+      for (const prospect of prospects) {
+        const call = await vapi.calls.create({
+          assistantId,
+          phoneNumberId,
+          customer: prospect,
+          metadata: { campaign: "Q1_Sales" }
+        });
+        calls.push(call);
+
+        // Rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+
+      return calls;
+    }
+    ```
+  
+
+  
+    ```python
+    import time
+
+    def run_bulk_call_campaign(assistant_id: str, phone_number_id: str):
+        prospects = [
+            {"number": "+1234567890", "name": "John Smith"},
+            {"number": "+1234567891", "name": "Jane Doe"},
+            # ... more prospects
+        ]
+
+        calls = []
+        for prospect in prospects:
+            call = vapi.calls.create(
+                assistant_id=assistant_id,
+                phone_number_id=phone_number_id,
+                customer=prospect,
+                metadata={"campaign": "Q1_Sales"}
+            )
+            calls.append(call)
+
+            # Rate limiting
+            time.sleep(2)
+
+        return calls
+    ```
+  
+
+  
+    ```java
+    public List runBulkCallCampaign(String assistantId, String phoneNumberId) {
+        List prospects = Arrays.asList(
+            Customer.builder().number("+1234567890").name("John Smith").build(),
+            Customer.builder().number("+1234567891").name("Jane Doe").build()
+            // ... more prospects
+        );
+
+        List calls = new ArrayList<>();
+        for (Customer prospect : prospects) {
+            Call call = vapi.calls().create(CreateCallRequest.builder()
+                .assistantId(assistantId)
+                .phoneNumberId(phoneNumberId)
+                .customer(prospect)
+                .metadata(Map.of("campaign", "Q1_Sales"))
+                .build());
+            calls.add(call);
+
+            // Rate limiting
+            Thread.sleep(2000);
+        }
+
+        return calls;
+    }
+    ```
+  
+
+  
+    ```ruby
+    def run_bulk_call_campaign(assistant_id, phone_number_id)
+      prospects = [
+        { number: "+1234567890", name: "John Smith" },
+        { number: "+1234567891", name: "Jane Doe" },
+        # ... more prospects
+      ]
+
+      calls = []
+      prospects.each do |prospect|
+        call = vapi.calls.create(
+          assistant_id: assistant_id,
+          phone_number_id: phone_number_id,
+          customer: prospect,
+          metadata: { campaign: "Q1_Sales" }
+        )
+        calls << call
+
+        # Rate limiting
+        sleep(2)
+      end
+
+      calls
+    end
+    ```
+  
+
+  
+    ```csharp
+    public async Task> RunBulkCallCampaign(string assistantId, string phoneNumberId)
+    {
+        var prospects = new List
+        {
+            new Customer { Number = "+1234567890", Name = "John Smith" },
+            new Customer { Number = "+1234567891", Name = "Jane Doe" },
+            // ... more prospects
+        };
+
+        var calls = new List();
+        foreach (var prospect in prospects)
+        {
+            var call = await vapi.Calls.CreateAsync(new CreateCallRequest
+            {
+                AssistantId = assistantId,
+                PhoneNumberId = phoneNumberId,
+                Customer = prospect,
+                Metadata = new Dictionary { ["campaign"] = "Q1_Sales" }
+            });
+            calls.Add(call);
+
+            // Rate limiting
+            await Task.Delay(2000);
+        }
+
+        return calls;
+    }
+    ```
+  
+
+  
+    ```go
+    func runBulkCallCampaign(client *vapi.Client, assistantID, phoneNumberID string) ([]*vapi.Call, error) {
+        prospects := []*vapi.Customer{
+            {Number: "+1234567890", Name: "John Smith"},
+            {Number: "+1234567891", Name: "Jane Doe"},
+            // ... more prospects
+        }
+
+        var calls []*vapi.Call
+        for _, prospect := range prospects {
+            call, err := client.Calls.Create(&vapi.CreateCallRequest{
+                AssistantID:   assistantID,
+                PhoneNumberID: phoneNumberID,
+                Customer:      prospect,
+                Metadata:      map[string]interface{}{"campaign": "Q1_Sales"},
+            })
+            if err != nil {
+                return nil, err
+            }
+            calls = append(calls, call)
+
+            // Rate limiting
+            time.Sleep(2 * time.Second)
+        }
+
+        return calls, nil
+    }
+    ```
+  
+
+
+## Webhook integration
+
+Handle real-time events for both client and server applications:
+
+
+  
+    ```typescript
+    import express from 'express';
+
+    const app = express();
+    app.use(express.json());
+
+    app.post('/webhook/vapi', async (req, res) => {
+      const { message } = req.body;
+
+      switch (message.type) {
+        case 'status-update':
+          console.log(`Call ${message.call.id}: ${message.call.status}`);
+          break;
+        case 'transcript':
+          console.log(`${message.role}: ${message.transcript}`);
+          break;
+        case 'function-call':
+          return handleFunctionCall(message, res);
+      }
+
+      res.status(200).json({ received: true });
+    });
+
+    function handleFunctionCall(message: any, res: express.Response) {
+      const { functionCall } = message;
+      
+      switch (functionCall.name) {
+        case 'lookup_order':
+          const orderData = { orderId: functionCall.parameters.orderId, status: 'shipped' };
+          return res.json({ result: orderData });
+        default:
+          return res.status(400).json({ error: 'Unknown function' });
+      }
+    }
+
+    app.listen(3000, () => console.log('Webhook server running on port 3000'));
+    ```
+  
+
+  
+    ```python
+    from flask import Flask, request, jsonify
+
+    app = Flask(__name__)
+
+    @app.route('/webhook/vapi', methods=['POST'])
+    def handle_vapi_webhook():
+        payload = request.get_json()
+        message = payload.get('message', {})
+        
+        if message.get('type') == 'status-update':
+            call = message.get('call', {})
+            print(f"Call {call.get('id')}: {call.get('status')}")
+            
+        elif message.get('type') == 'transcript':
+            print(f"{message.get('role')}: {message.get('transcript')}")
+            
+        elif message.get('type') == 'function-call':
+            return handle_function_call(message)
+        
+        return jsonify({"received": True}), 200
+
+    def handle_function_call(message):
+        function_call = message.get('functionCall', {})
+        function_name = function_call.get('name')
+        
+        if function_name == 'lookup_order':
+            order_data = {
+                "orderId": function_call.get('parameters', {}).get('orderId'),
+                "status": "shipped"
+            }
+            return jsonify({"result": order_data})
+        
+        return jsonify({"error": "Unknown function"}), 400
+
+    if __name__ == '__main__':
+        app.run(port=5000)
+    ```
+  
+
+  
+    ```java
+    @RestController
+    @RequestMapping("/webhook")
+    public class VapiWebhookController {
+
+        @PostMapping("/vapi")
+        public ResponseEntity handleVapiWebhook(@RequestBody Map payload) {
+            Map message = (Map) payload.get("message");
+            String type = (String) message.get("type");
+
+            switch (type) {
+                case "status-update":
+                    Map call = (Map) message.get("call");
+                    System.out.println("Call " + call.get("id") + ": " + call.get("status"));
+                    break;
+                case "transcript":
+                    System.out.println(message.get("role") + ": " + message.get("transcript"));
+                    break;
+                case "function-call":
+                    return handleFunctionCall(message);
+            }
+
+            return ResponseEntity.ok(Map.of("received", true));
+        }
+
+        private ResponseEntity handleFunctionCall(Map message) {
+            Map functionCall = (Map) message.get("functionCall");
+            String functionName = (String) functionCall.get("name");
+
+            if ("lookup_order".equals(functionName)) {
+                Map parameters = (Map) functionCall.get("parameters");
+                Map orderData = Map.of(
+                    "orderId", parameters.get("orderId"),
+                    "status", "shipped"
+                );
+                return ResponseEntity.ok(Map.of("result", orderData));
+            }
+
+            return ResponseEntity.badRequest().body(Map.of("error", "Unknown function"));
+        }
+    }
+    ```
+  
+
+  
+    ```ruby
+    require 'sinatra'
+    require 'json'
+
+    post '/webhook/vapi' do
+      payload = JSON.parse(request.body.read)
+      message = payload['message']
+
+      case message['type']
+      when 'status-update'
+        call = message['call']
+        puts "Call #{call['id']}: #{call['status']}"
+      when 'transcript'
+        puts "#{message['role']}: #{message['transcript']}"
+      when 'function-call'
+        return handle_function_call(message)
+      end
+
+      content_type :json
+      { received: true }.to_json
+    end
+
+    def handle_function_call(message)
+      function_call = message['functionCall']
+      function_name = function_call['name']
+
+      case function_name
+      when 'lookup_order'
+        order_data = {
+          orderId: function_call['parameters']['orderId'],
+          status: 'shipped'
+        }
+        content_type :json
+        { result: order_data }.to_json
+      else
+        status 400
+        content_type :json
+        { error: 'Unknown function' }.to_json
+      end
+    end
+    ```
+  
+
+  
+    ```csharp
+    [ApiController]
+    [Route("webhook")]
+    public class VapiWebhookController : ControllerBase
+    {
+        [HttpPost("vapi")]
+        public IActionResult HandleVapiWebhook([FromBody] WebhookPayload payload)
+        {
+            var message = payload.Message;
+
+            switch (message.Type)
+            {
+                case "status-update":
+                    Console.WriteLine($"Call {message.Call.Id}: {message.Call.Status}");
+                    break;
+                case "transcript":
+                    Console.WriteLine($"{message.Role}: {message.Transcript}");
+                    break;
+                case "function-call":
+                    return HandleFunctionCall(message);
+            }
+
+            return Ok(new { received = true });
+        }
+
+        private IActionResult HandleFunctionCall(WebhookMessage message)
+        {
+            var functionCall = message.FunctionCall;
+
+            switch (functionCall.Name)
+            {
+                case "lookup_order":
+                    var orderData = new
+                    {
+                        orderId = functionCall.Parameters["orderId"],
+                        status = "shipped"
+                    };
+                    return Ok(new { result = orderData });
+                default:
+                    return BadRequest(new { error = "Unknown function" });
+            }
+        }
+    }
+    ```
+  
+
+  
+    ```go
+    package main
+
+    import (
+        "encoding/json"
+        "fmt"
+        "net/http"
+    )
+
+    type WebhookPayload struct {
+        Message WebhookMessage `json:"message"`
+    }
+
+    type WebhookMessage struct {
+        Type         string                 `json:"type"`
+        Call         *Call                  `json:"call,omitempty"`
+        Role         string                 `json:"role,omitempty"`
+        Transcript   string                 `json:"transcript,omitempty"`
+        FunctionCall *FunctionCall          `json:"functionCall,omitempty"`
+    }
+
+    func handleVapiWebhook(w http.ResponseWriter, r *http.Request) {
+        var payload WebhookPayload
+        if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+            http.Error(w, err.Error(), http.StatusBadRequest)
+            return
+        }
+
+        message := payload.Message
+
+        switch message.Type {
+        case "status-update":
+            fmt.Printf("Call %s: %s\n", message.Call.ID, message.Call.Status)
+        case "transcript":
+            fmt.Printf("%s: %s\n", message.Role, message.Transcript)
+        case "function-call":
+            handleFunctionCall(w, message)
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(map[string]bool{"received": true})
+    }
+
+    func handleFunctionCall(w http.ResponseWriter, message WebhookMessage) {
+        functionCall := message.FunctionCall
+
+        switch functionCall.Name {
+        case "lookup_order":
+            orderData := map[string]interface{}{
+                "orderId": functionCall.Parameters["orderId"],
+                "status":  "shipped",
+            }
+            w.Header().Set("Content-Type", "application/json")
+            json.NewEncoder(w).Encode(map[string]interface{}{"result": orderData})
+        default:
+            http.Error(w, `{"error": "Unknown function"}`, http.StatusBadRequest)
+        }
+    }
+
+    func main() {
+        http.HandleFunc("/webhook/vapi", handleVapiWebhook)
+        fmt.Println("Webhook server running on port 8080")
+        http.ListenAndServe(":8080", nil)
+    }
+    ```
+  
+
+
+## Next steps
+
+Now that you understand both client and server SDK capabilities:
+
+* **Explore use cases:** Check out our [examples section](/assistants/examples/inbound-support) for complete implementations
+* **Add tools:** Connect your voice agents to external APIs and databases with [custom tools](/tools/custom-tools)
+* **Configure models:** Try different [speech and language models](/assistants/speech-configuration) for better performance
+* **Scale with workflows:** Use [Vapi workflows](/workflows/quickstart) for complex multi-step processes
+
+## Resources
+
+**Client SDKs:**
+
+* [Web SDK GitHub](https://github.com/VapiAI/web)
+* [React Native SDK GitHub](https://github.com/VapiAI/react-native)
+* [Flutter SDK GitHub](https://github.com/VapiAI/flutter)
+* [iOS SDK GitHub](https://github.com/VapiAI/ios)
+* [Python Client GitHub](https://github.com/VapiAI/python)
+
+**Server SDKs:**
+
+* [TypeScript SDK GitHub](https://github.com/VapiAI/server-sdk-typescript)
+* [Python SDK GitHub](https://github.com/VapiAI/server-sdk-python)
+* [Java SDK GitHub](https://github.com/VapiAI/server-sdk-java)
+* [Ruby SDK GitHub](https://github.com/VapiAI/server-sdk-ruby)
+* [C# SDK GitHub](https://github.com/VapiAI/server-sdk-csharp)
+* [Go SDK GitHub](https://github.com/VapiAI/server-sdk-go)
+
+**Documentation:**
+
+* [API Reference](/api-reference)
+* [Discord Community](https://discord.gg/pUFNcf2WmH)
+
+
+# Guides
+
+> Explore real-world, cloneable examples to build voice agents with Vapi. Now including new Workflow-based guides!
+
+
+  Vapi Guides
+
+
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    
+
+
+    Build an appointment scheduling assistant that can schedule appointments for a barbershop
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    
+
+
+    Build a medical triage and scheduling assistant that can triage patients and schedule appointments for a clinic
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    
+
+
+    Build an ecommerce order management assistant that can track orders and process returns
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Workflows
+    
+
+
+    
+
+
+    Create an outbound sales agent that can schedule appointments automatically
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Assistants
+    
+
+
+    
+
+
+    Build a docs agent that can answer questions about your documentation
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Assistants
+    
+
+
+    
+
+
+    Build a technical support assistant that remembers where you left off between calls
+  
+
+  
+    
+
+      
+    
+
+
+    
+
+      Built with Assistants
+    
+
+
+    
+
+
+    Easily integrate the Vapi Voice Widget into your website for enhanced user interaction
+  
+
+
+
+# Transient vs permanent configurations
+
+> Learn to choose between inline and stored assistant configurations
+
+## Overview
+
+Choose between **transient** (inline) and **permanent** (stored) configurations to optimize your Vapi implementation for flexibility, reusability, and management needs.
+
+**In this guide, you'll learn to:**
+
+* Understand when to use transient vs permanent configurations
+* Implement both approaches with practical examples
+* Apply best practices for each configuration type
+
+## Key differences
+
+| Aspect               | Transient                       | Permanent                            |
+| -------------------- | ------------------------------- | ------------------------------------ |
+| **Definition**       | Complete JSON in API request    | ID reference to stored configuration |
+| **Storage**          | Exists only during API call     | Stored on Vapi servers               |
+| **Reusability**      | Defined per request             | Reusable across multiple calls       |
+| **Dashboard access** | Not visible                     | Visible and manageable               |
+| **Best for**         | Dynamic, personalized scenarios | Shared, reusable setups              |
+
+## Transient configurations
+
+Use **transient configurations** when you need dynamic, call-specific behavior without pre-creating stored configurations.
+
+### When to use transient
+
+
+  
+    **Best for:** Customer-specific data Embed user information directly in
+    system messages
+  
+
+  
+    **Best for:** Configuration experiments Test different setups without
+    permanent storage
+  
+
+  
+    **Best for:** Short-term promotions Event-specific assistants that don't
+    need persistence
+  
+
+  
+    **Best for:** Rapid prototyping Iterate quickly without managing stored
+    configs
+  
+
+
+### Customer service with pre-filled data
+
+
+  ```json title="Transient assistant"
+  {
+    "assistant": {
+      "name": "Customer Service Agent",
+      "model": {
+        "provider": "openai",
+        "model": "gpt-4o",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a customer service representative for Acme Corp. The customer's name is John Smith and their account status is premium. Provide personalized assistance based on their business account history."
+          }
+        ],
+        "temperature": 0.7
+      },
+      "voice": {
+        "provider": "11labs",
+        "voiceId": "N2lVS1w4EtoT3dr4eOWO"
+      },
+      "firstMessage": "Hello John, I see you're calling about your business account. How can I help you today?"
+    }
+  }
+  ```
+
+  ```bash title="Create call with transient assistant"
+  curl -X POST "https://api.vapi.ai/call" \
+    -H "Authorization: Bearer $VAPI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "phoneNumberId": "your-phone-number-id",
+      "customer": {
+        "number": "+1234567890"
+      },
+      "assistant": {
+        "name": "Personalized Sales Agent",
+        "model": {
+          "provider": "openai",
+          "model": "gpt-4",
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are calling John about their interest in Enterprise Solution. Their budget is $5000."
+            }
+          ]
+        },
+        "voice": {
+          "provider": "11labs",
+          "voiceId": "N2lVS1w4EtoT3dr4eOWO"
+        },
+        "firstMessage": "Hi John, this is Sarah from Acme Corp calling about Enterprise Solution. Do you have a moment to chat?"
+      }
+    }'
+  ```
+
+
+### A/B testing scenario
+
+
+  ```json title="Variant A - Enthusiastic approach"
+  {
+    "assistant": {
+      "name": "A/B Test Assistant - Variant A",
+      "model": {
+        "provider": "openai",
+        "model": "gpt-4",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an enthusiastic sales representative. Use upbeat language and emphasize benefits."
+          }
+        ],
+        "temperature": 0.9
+      },
+      "voice": {
+        "provider": "11labs",
+        "voiceId": "energetic-voice-id"
+      },
+      "firstMessage": "Hey there! Exciting news - I'd love to tell you about our amazing new features!",
+      "analysisPlan": {
+        "summaryPrompt": "Rate the customer's engagement level and interest in the product on a scale of 1-10.",
+        "structuredDataPlan": {
+          "enabled": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "engagement_score": { "type": "number" },
+              "interest_level": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "conversion_likelihood": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  ```json title="Variant B - Professional approach"
+  {
+    "assistant": {
+      "name": "A/B Test Assistant - Variant B",
+      "model": {
+        "provider": "openai",
+        "model": "gpt-4",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a professional sales consultant. Use formal language and focus on business value."
+          }
+        ],
+        "temperature": 0.3
+      },
+      "voice": {
+        "provider": "11labs",
+        "voiceId": "professional-voice-id"
+      },
+      "firstMessage": "Good afternoon. I'm calling to discuss how our enterprise solutions can benefit your organization.",
+      "analysisPlan": {
+        "summaryPrompt": "Rate the customer's engagement level and interest in the product on a scale of 1-10.",
+        "structuredDataPlan": {
+          "enabled": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "engagement_score": { "type": "number" },
+              "interest_level": {
+                "type": "string",
+                "enum": ["high", "medium", "low"]
+              },
+              "conversion_likelihood": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+
+### Transient tools
+
+Create custom tools for specific integrations or workflows:
+
+
+  ```json title="Customer-specific function tool"
+  {
+    "tools": [
+      {
+        "type": "function",
+        "name": "check_inventory",
+        "description": "Check product inventory for the customer's specific region",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "productId": {
+              "type": "string",
+              "description": "The product ID to check"
+            },
+            "region": {
+              "type": "string",
+              "description": "Customer's region code"
+            }
+          },
+          "required": ["productId", "region"]
+        },
+        "server": {
+          "url": "https://api.customer-integration.com/inventory",
+          "secret": "customer-webhook-secret",
+          "timeoutSeconds": 30
+        }
+      }
+    ]
+  }
+  ```
+
+  ```json title="Context-specific transfer tool"
+  {
+    "tools": [
+      {
+        "type": "transferCall",
+        "destinations": [
+          {
+            "type": "assistant",
+            "assistantName": "technical-support",
+            "description": "Transfer to technical support specialist",
+            "message": "Let me connect you with our technical team who can better assist with your technical question."
+          },
+          {
+            "type": "number",
+            "number": "+1234567890",
+            "description": "Emergency escalation line",
+            "message": "Transferring you to our priority support team."
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+
+
+  **Transient limitations:** Configurations exist only during the API call and
+  cannot be managed through the dashboard or reused across calls.
+
+
+## Permanent configurations
+
+Use **permanent configurations** for reusable setups that multiple teams can access and manage through the dashboard.
+
+### When to use permanent
+
+
+  
+    **Best for:** Team collaboration Assistants used across multiple departments
+  
+
+  
+    **Best for:** Non-technical users Visual configuration management
+  
+
+  
+    **Best for:** Standard workflows Consistent configurations across calls
+  
+
+  
+    **Best for:** Change tracking Maintain configuration history
+  
+
+
+### Creating permanent configurations
+
+
+  
+    Store your assistant configuration on Vapi servers
+  
+
+  
+    Use the returned UUID to reference the assistant
+  
+
+  
+    Use the ID instead of inline configuration
+  
+
+
+
+  ```bash title="Create permanent assistant"
+  curl -X POST "https://api.vapi.ai/assistant" \
+    -H "Authorization: Bearer $VAPI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "General Support Assistant",
+      "model": {
+        "provider": "openai",
+        "model": "gpt-4",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a helpful customer service representative for Acme Corp. Provide accurate information about our products and services."
+          }
+        ]
+      },
+      "voice": {
+        "provider": "11labs",
+        "voiceId": "N2lVS1w4EtoT3dr4eOWO"
+      },
+      "firstMessage": "Hello! Thank you for calling Acme Corp. How can I assist you today?"
+    }'
+  ```
+
+  ```bash title="Create permanent tool"
+  curl -X POST "https://api.vapi.ai/tool" \
+    -H "Authorization: Bearer $VAPI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "type": "function",
+      "name": "update_crm_contact",
+      "description": "Update contact information in the CRM system",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "contactId": {
+            "type": "string",
+            "description": "CRM contact ID"
+          },
+          "updates": {
+            "type": "object",
+            "description": "Fields to update"
+          }
+        },
+        "required": ["contactId", "updates"]
+      },
+      "server": {
+        "url": "https://api.yourcrm.com/contacts/update",
+        "secret": "your-webhook-secret"
+      }
+    }'
+  ```
+
+  ```bash title="Use permanent configurations"
+  curl -X POST "https://api.vapi.ai/call" \
+    -H "Authorization: Bearer $VAPI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "phoneNumberId": "your-phone-number-id",
+      "customer": {
+        "number": "+1234567890"
+      },
+      "assistantId": "your-assistant-id",
+      "assistantOverrides": {
+        "toolIds": ["tool-id-1", "tool-id-2"],
+        "variableValues": {
+          "customerName": "John Smith",
+          "accountId": "ACC123456"
+        }
+      }
+    }'
+  ```
+
+
+## Mixed configurations
+
+Combine transient and permanent configurations for maximum flexibility:
+
+
+  ```json title="Squad with mixed configurations"
+  {
+    "squad": [
+      {
+        "assistantId": "permanent-receptionist-assistant-id",
+        "assistantDestinations": [
+          {
+            "type": "assistant",
+            "assistantName": "technical-support"
+          }
+        ]
+      },
+      {
+        "assistant": {
+          "name": "technical-support",
+          "model": {
+            "provider": "openai",
+            "model": "gpt-4",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a technical support specialist for Enterprise Software. The customer has high priority issue."
+              }
+            ]
+          },
+          "voice": {
+            "provider": "11labs",
+            "voiceId": "technical-voice-id"
+          }
+        },
+        "assistantDestinations": []
+      }
+    ]
+  }
+  ```
+
+  ```json title="Server message with transient assistant"
+  {
+    "assistant": {
+      "name": "Dynamic Inbound Handler",
+      "model": {
+        "provider": "openai",
+        "model": "gpt-4",
+        "messages": [
+          {
+            "role": "system",
+            "content": "The caller is from West Coast calling during business hours. Adjust your approach accordingly."
+          }
+        ]
+      },
+      "voice": {
+        "provider": "11labs",
+        "voiceId": "appropriate-voice-for-region"
+      },
+      "firstMessage": "Hello! I see you're calling from West Coast. How can I help you today?"
+    }
+  }
+  ```
+
+
+## Best practices
+
+
+  
+    **Use transient when:**
+
+    * Customer data needs to be embedded in system messages
+    * Testing different configurations temporarily
+    * Creating user-specific personalizations
+    * Rapid prototyping and development
+
+    **Use permanent when:**
+
+    * Multiple teams need access to the same configuration
+    * Non-technical users manage configurations via dashboard
+    * Consistency across multiple API calls is required
+    * Version control and change tracking are important
+  
+
+  
+    * **Transient:** Slightly larger request payloads but no additional API calls
+    * **Permanent:** Smaller request payloads but requires initial creation calls
+    * **Mixed:** Optimize by using permanent for stable configs, transient for dynamic parts
+  
+
+  
+    * **Transient:** Full configuration visible in API requests - avoid sensitive data
+    * **Permanent:** Stored securely on Vapi servers with proper access controls
+    * **Recommendation:** Use permanent configurations for sensitive integrations
+  
+
+
+## Limitations
+
+
+  
+    * **No persistence:** Cannot retrieve or reuse after API call - **No
+      dashboard access:** Not visible in Vapi dashboard - **No version control:**
+      Cannot track configuration changes - **Request size:** Larger payloads may
+      impact performance
+  
+
+  
+    * **Setup overhead:** Requires separate creation API calls - **ID
+      management:** Need to track and manage configuration UUIDs - **Update
+      complexity:** Changes require additional API calls
+  
+
+
+## Next steps
+
+Now that you understand transient vs permanent configurations:
+
+* **[Assistant creation guide](/docs/assistants):** Learn to build and customize assistants
+* **[Tool integration](/docs/tools):** Connect external services and functions
+* **[Squad configuration](/docs/squads):** Set up multi-assistant workflows
+* **[API reference](/fern/api-reference):** Explore all configuration options
+
+
+# Variables
+
+> Personalize assistant messages with dynamic and default variables
+
+## Overview
+
+Use dynamic variables in the system prompt or any message in the dashboard with double curly braces (e.g., `{{name}}`).
+
+To set values, make a phone call request through the API and set `assistantOverrides`. You cannot set variable values directly in the dashboard.
+
+For example, set the assistant's first message to "Hello, `{{name}}`!" and assign `name` to `John` by passing `assistantOverrides` with `variableValues`:
+
+```json
+{
+  "variableValues": {
+    "name": "John"
+  }
+}
+```
+
+## Using dynamic variables in a phone call
+
+
+  
+    Create a JSON payload with these key-value pairs:
+
+    * **`assistantId`**: Replace `"your-assistant-id"` with your assistant's actual ID.
+    * **`assistantOverride`**: Customize your assistant's behavior.
+      * **`variableValues`**: Include dynamic variables in the format `{ "variableName": "variableValue" }`. Example: `{ "name": "John" }`.
+    * **`customer`**: Represent the call recipient.
+      * **`number`**: Replace `"+1xxxxxxxxxx"` with the recipient's phone number (E.164 format).
+    * **`phoneNumberId`**: Replace `"your-phone-id"` with your registered phone number's ID. Find it on the [Phone number](https://dashboard.vapi.ai/phone-numbers) page.
+  
+
+  
+    Send the JSON payload to the `/call/phone` endpoint using your preferred method (e.g., HTTP POST request).
+
+    ```json
+    {
+      "assistantId": "your-assistant-id",
+      "assistantOverrides": {
+        "variableValues": {
+          "name": "John"
+        }
+      },
+      "customer": {
+        "number": "+1xxxxxxxxxx"
+      },
+      "phoneNumberId": "your-phone-id"
+    }
+    ```
+  
+
+
+
+  Ensure `{{variableName}}` is included in all prompts where needed.
+
+
+## Default Variables
+
+These variables are automatically filled based on the current (UTC) time, so you don't need to set them manually in `variableValues`:
+
+| Variable              | Description                 | Example              |
+| --------------------- | --------------------------- | -------------------- |
+| `{{now}}`             | Current date and time (UTC) | Jan 1, 2024 12:00 PM |
+| `{{date}}`            | Current date (UTC)          | Jan 1, 2024          |
+| `{{time}}`            | Current time (UTC)          | 12:00 PM             |
+| `{{month}}`           | Current month (UTC)         | January              |
+| `{{day}}`             | Current day of month (UTC)  | 1                    |
+| `{{year}}`            | Current year (UTC)          | 2024                 |
+| `{{customer.number}}` | Customer's phone number     | +1xxxxxxxxxx         |
+| `{{customer.X}}`      | Any other customer property |                      |
+
+## Advanced date and time usage
+
+You can use advanced date and time formatting in any prompt or message that supports dynamic variables in the dashboard or API. We use [LiquidJS](https://liquidjs.com/) for formatting - see their docs for details.
+
+Format a date or time using the LiquidJS `date` filter:
+
+```liquid
+{{"now" | date: "%A, %B %d, %Y, %I:%M %p", "America/Los_Angeles"}}
+```
+
+Outputs: `Monday, January 01, 2024, 03:45 PM`
+
+**Examples:**
+
+* 24-hour time:
+  ```liquid
+  {{"now" | date: "%H:%M", "Europe/London"}}
+  ```
+  → `17:30`
+* Day of week:
+  ```liquid
+  {{"now" | date: "%A"}}
+  ```
+  → `Tuesday`
+* With customer number:
+  ```liquid
+  Hello, your number is {{customer.number}} and the time is {{"now" | date: "%I:%M %p", "America/New_York"}}
+  ```
+
+**Common formats:**
+
+| Format String | Output       | Description       |
+| ------------- | ------------ | ----------------- |
+| `%Y-%m-%d`    | 2024-01-01   | Year-Month-Day    |
+| `%I:%M %p`    | 03:45 PM     | Hour:Minute AM/PM |
+| `%H:%M`       | 15:45        | 24-hour time      |
+| `%A`          | Monday       | Day of week       |
+| `%b %d, %Y`   | Jan 01, 2024 | Abbrev. Month Day |
+
+```
+
+## Using dynamic variables in the dashboard
+
+To use dynamic variables in the dashboard, include them in your prompts or messages using double curly braces. For example:
+
+```
+
+Hello, \{\{name}}!
+
+```
+
+When you start a call, you must provide a value for each variable (like `name`) in the call configuration or via the API/SDK.
+
+
+Always use double curly braces (`{{variableName}}`) to reference dynamic variables in your prompts and messages.
+
+
+```
+
+
+# Multilingual
+
+> Set up multilingual support for your assistant
+
+## Overview
+
+We support dozens of providers, giving you access to their available models for multilingual support.
+
+Certain providers, like google and deepgram, have multilingual transcriber models that can transcribe audio in any language.
+
+## Transcribers (Speech-to-Text)
+
+In the dashboard's assistant tab, click on "transcriber" to view all of the available providers, languages and models for each. Each model offers different language options.
+
+## Voice (Text-to-Speech)
+
+Each provider includes a voice tag in the name of their voice. For example, Azure offers the `es-ES-ElviraNeural` voice for Spanish. Go to voice tab in the assistants page to see all of the available models.
+
+### Example: Setting Up a Spanish Voice Assistant
+
+```json
+{
+  "voice": {
+    "provider": "azure",
+    "voiceId": "es-ES-ElviraNeural"
+  }
+}
+```
+
+In this example, the voice `es-ES-ElviraNeural` from Azure supports Spanish. Replace `es-ES-ElviraNeural` with any other voice ID that supports your desired language.
+
+
+# Personalization with user information
+
+> Add customer-specific information to your voice assistant conversations
+
+## Overview
+
+Personalization lets you include customer-specific information in your voice assistant conversations. When a customer calls, your server can provide data about that customer, which is then used to tailor the conversation in real time.
+
+This approach is ideal for use cases like customer support, account management, or any scenario where the assistant should reference details unique to the caller.
+
+## How Personalization Works
+
+
+  
+    When a call comes in, Vapi sends a request to your server instead of using a fixed assistant configuration.
+  
+
+  
+    Your server receives the request, identifies the caller (for example, by phone number), and fetches relevant customer data from your database or CRM.
+  
+
+  
+    Your server responds to Vapi with either:
+
+    * An existing assistant ID and a set of dynamic variables to personalize the conversation, or
+    * A complete assistant configuration, with customer data embedded directly in the prompts or instructions.
+  
+
+  
+    Vapi uses the personalized assistant configuration or variables to guide the conversation, referencing the customer's information as needed.
+  
+
+
+## Prerequisites
+
+* A Vapi phone number
+* A created Vapi Assistant
+* A server endpoint to receive Vapi's requests
+
+## Implementation
+
+
+  
+    Use variable placeholders in your assistant's instructions or messages with the `{{variable_name}}` syntax.
+
+    Example:\
+    `"Hello {{customerName}}! I see you've been a {{accountType}} customer since {{joinDate}}."`
+  
+
+  
+    Update your phone number so that Vapi sends incoming call events to your server, rather than using a static assistant.
+
+    ```json
+    PATCH /phone-number/{id}
+    {
+      "assistantId": null,
+      "squadId": null,
+      "server": {
+        "url": "https://your-server.com/api/assistant-selector"
+      }
+    }
+    ```
+
+    
+      Your server must respond within 7.5 seconds, or the call will fail.
+    
+  
+
+  
+    Your server should handle POST requests from Vapi and return either:
+
+    **Option 1: Use an Existing Assistant with Dynamic Variables**
+
+    ```javascript
+    app.post("/api/assistant-selector", async (req, res) => {
+      if (req.body.message?.type === "assistant-request") {
+        const phoneNumber = req.body.call.from.phoneNumber;
+        const customer = await crmAPI.getCustomerByPhone(phoneNumber);
+
+        res.json({
+          assistantId: "asst_customersupport",
+          assistantOverrides: {
+            variableValues: {
+              customerName: customer.name,
+              accountType: customer.tier,
+              joinDate: customer.createdAt
+            }
+          }
+        });
+      }
+    });
+    ```
+
+    **Option 2: Return a Complete Assistant Configuration**
+
+    ```javascript
+    app.post("/api/assistant-selector", async (req, res) => {
+      if (req.body.message?.type === "assistant-request") {
+        const phoneNumber = req.body.call.from.phoneNumber;
+        const customer = await crmAPI.getCustomerByPhone(phoneNumber);
+
+        res.json({
+          assistant: {
+            name: "Dynamic Customer Support Assistant",
+            model: {
+              provider: "openai",
+              model: "gpt-4o",
+              messages: [{
+                role: "system",
+                content: `You are helping ${customer.name}, a ${customer.tier} member since ${customer.createdAt}.`
+              }]
+            },
+            voice: {
+              provider: "11labs",
+              voiceId: "shimmer"
+            }
+          }
+        });
+      }
+    });
+    ```
+  
+
+
+## Error Handling
+
+If your server encounters an error or cannot find the customer, return a response like this to end the call with a spoken message:
+
+```json
+{
+  "error": "Unable to find customer record. Please try again later."
+}
+```
+
+## Common Issues
+
+
+  * Use the exact `{{variable_name}}` syntax for variables in your assistant configuration.
+  * Your server must respond within 7.5 seconds.
+  * Implement fallbacks for missing or incomplete customer data.
+  * Ensure your endpoint is highly available to avoid missed calls.
+
+
+
+# Voice formatting plan
+
+> Format LLM output for natural-sounding speech
+
+## Overview
+
+Voice formatting automatically transforms raw text from your language model (LLM) into a format that sounds natural when spoken by a text-to-speech (TTS) provider. This process—called **Voice Input Formatted**—is enabled by default for all assistants.
+
+Formatting helps with things like:
+
+* Expanding numbers and currency (e.g., `$42.50` → "forty two dollars and fifty cents")
+* Expanding abbreviations (e.g., `ST` → "STREET")
+* Spacing out phone numbers (e.g., `123-456-7890` → "1 2 3 4 5 6 7 8 9 0")
+
+You can turn off formatting if you want the TTS to read the raw LLM output.
+
+## How voice input formatting works
+
+When enabled, the formatter runs a series of transformations on your text, each handled by a specific function. Here's the order and what each function does:
+
+| **Step** | **Function Name**                                                           | **Description**                                                                                                           | **Before**                            | **After**                                                                 | **Default** | **Precedence** |
+| :------- | :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------------------------ | :------------------------------------------------------------------------ | :---------- | :------------- |
+| 1        | `removeAngleBracketContent`                                                 | Removes anything within `<...>`, except for ``, ``, or double angle brackets `<< >>`.                       | `Hello  world`                   | `Hello  world`                                                            | ✅           | -              |
+| 2        | `removeMarkdownSymbols`                                                     | Removes markdown symbols like `_`, `` ` ``, and `~`. Asterisks (`*`) are preserved in this step.                          | `**Wanted** to say *hi*`              | `**Wanted** to say *hi*`                                                  | ✅           | 0              |
+| 3        | `removePhrasesInAsterisks`                                                  | Removes text surrounded by single or double asterisks.                                                                    | `**Wanted** to say *hi*`              | ` to say`                                                                 | ❌           | 0              |
+| 4        | `replaceNewLinesWithPeriods`                                                | Converts new lines (`\n`) to periods for smoother speech.                                                                 | `Hello  world\n to say\nWe have NASA` | `Hello  world .  to say . We have NASA`                                   | ✅           | 0              |
+| 5        | `replaceColonsWithPeriods`                                                  | Replaces `:` with `.` for better phrasing.                                                                                | `price: $42.50`                       | `price. $42.50`                                                           | ✅           | 0              |
+| 6        | `formatAcronyms`                                                            | Converts known acronyms to lowercase (e.g., NASA → nasa) or spaces out unknown all-caps words unless they contain vowels. | `NASA and .NET`                       | `nasa and .net`                                                           | ✅           | 0              |
+| 7        | `formatDollarAmounts`                                                       | Converts currency amounts to spoken words.                                                                                | `$42.50`                              | `forty two dollars and fifty cents`                                       | ✅           | 0              |
+| 8        | `formatEmails`                                                              | Replaces `@` with "at" and `.` with "dot" in emails.                                                                      | `JOHN.DOE@example.COM`                | `JOHN dot DOE at example dot COM`                                         | ✅           | 0              |
+| 9        | `formatDates`                                                               | Converts date strings into spoken date format.                                                                            | `2023 05 10`                          | `Wednesday, May 10, 2023`                                                 | ✅           | 0              |
+| 10       | `formatTimes`                                                               | Expands or simplifies time expressions.                                                                                   | `14:00`                               | `14`                                                                      | ✅           | 0              |
+| 11       | `formatDistances`, `formatUnits`, `formatPercentages`, `formatPhoneNumbers` | Converts units, distances, percentages, and phone numbers into spoken words.                                              | `5km`, `43 lb`, `50%`, `123-456-7890` | `5 kilometers`, `forty three pounds`, `50 percent`, `1 2 3 4 5 6 7 8 9 0` | ✅           | 0              |
+| 12       | `formatNumbers`                                                             | Formats general numbers: years read as digits, large numbers spelled out, negative and decimal numbers clarified.         | `-9`, `2.5`, `2023`                   | `minus nine`, `two point five`, `2023`                                    | ✅           | 0              |
+| 13       | `removeAsterisks`                                                           | Removes all asterisk characters from the text.                                                                            | `**Bold** and *italic*`               | `Bold and italic`                                                         | ✅           | 1              |
+| 14       | `Applying Replacements`                                                     | Applies user-defined final replacements like expanding street abbreviations.                                              | `320 ST 21 RD`                        | `320 STREET 21 ROAD`                                                      | ✅           | -              |
+
+***
+
+## Customizing the formatting plan
+
+You can control some aspects of formatting:
+
+### Enabled
+
+Formatting is on by default. To disable, set:
+
+```js
+voice.chunkPlan.formatPlan.enabled = false
+```
+
+### Number-to-digits cutoff
+
+Controls when numbers are read as digits instead of words.
+
+* **Default:** `2025` (current year)
+* Example: With a cutoff of `2025`, numbers above this are read as digits.
+* To spell out larger numbers, set the cutoff higher (e.g., `300000`).
+
+### Replacements
+
+Add exact or regex-based substitutions to customize output.
+
+* **Example 1:** Replace `hello` with `hi`:
+  ```js
+  { type: 'exact', key: 'hello', value: 'hi' }
+  ```
+* **Example 2:** Replace words matching a pattern:
+  ```js
+  { type: 'regex', regex: '\b[a-zA-Z]{5}\b', value: 'hi' }
+  ```
+
+
+  Currently, only replacements and the number-to-digits cutoff are customizable. Other options are not exposed.
+
+
+***
+
+## Turning formatting off
+
+To disable all formatting and use raw LLM output, set either of these to `false`:
+
+```js
+voice.chunkPlan.enabled = false
+// or
+voice.chunkPlan.formatPlan.enabled = false
+```
+
+***
+
+## Summary
+
+* Voice input formatting improves clarity and naturalness for TTS.
+* Each transformation step targets a specific pattern for better speech output.
+* You can customize or disable formatting as needed.
+
+
+# Flush syntax
+
+> Force immediate voice transmission with VAPI's flush syntax for real-time interactions
+
+## Overview
+
+The flush syntax is a VAPI audio control token that forces immediate transmission of LLM output to voice providers, eliminating buffering delays for real-time voice interactions.
+
+**When to use flush syntax:**
+
+* Acknowledge user requests immediately during processing
+* Provide feedback during long-running tool executions
+* Create natural conversation pauses
+* Support custom LLM integrations with processing delays
+
+
+  Use flush strategically—overuse can cause audio fragmentation and degrade
+  conversation quality.
+
+
+## How it works
+
+The flush syntax bypasses normal buffering to provide immediate audio feedback:
+
+1. **Detection**: VAPI scans LLM output for flush syntax using regex pattern
+2. **Split**: Text is divided at the flush position
+3. **Immediate Send**: Content before flush is sent instantly to voice provider
+4. **Continue**: Remaining text follows normal buffering
+
+
+  ```typescript title="Processing Example"
+  const { sendToTTS, flush, remainingBuffer } = ttsBuffer(buffer, voice);
+  if (sendToTTS.length > 0) {
+    pushBuffer(sendToTTS, flush); // flush=true triggers immediate send
+    buffer = remainingBuffer;
+  }
+  ```
+
+  ```python title="Conceptual Flow"
+  # 1. LLM generates: "I'm processing your request...  Here's the result"
+  # 2. VAPI detects flush syntax
+  # 3. Sends "I'm processing your request..." immediately to voice
+  # 4. Continues with "Here's the result" using normal buffering
+  ```
+
+
+## Syntax formats
+
+VAPI supports three flush formats with case-insensitive matching:
+
+
+  ````html title="Self-closing (Recommended)"
+  
+  ``` ```html title="Opening tag"
+  ``` ```html title="Closing tag"
+  ````
+
+
+
+  All formats use regex pattern `/<\s*flush\s*\/?>|<\s*\/\s*flush\s*>/i` allowing whitespace variations.
+
+
+## Configuration requirements
+
+Flush syntax requires proper voice configuration:
+
+
+  ```json title="Assistant Configuration"
+  {
+    "voice": {
+      "chunkPlan": {
+        "enabled": true  // Required for flush to work
+      }
+    }
+  }
+  ```
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    voice: {
+      chunkPlan: {
+        enabled: true
+      }
+    }
+    // ... other configuration
+  });
+  ```
+
+
+
+  Flush will NOT work when `chunkPlan.enabled: false`. The tags will appear in
+  voice output instead of being processed.
+
+
+## Usage examples
+
+### Basic acknowledgment
+
+```javascript
+"I'm processing your request...  Let me check that for you.";
+```
+
+### Tool processing feedback
+
+```javascript
+"Looking up that information...  This may take a moment.";
+```
+
+### Conversation flow
+
+```javascript
+"That's a great question.  Based on the data I have...";
+```
+
+### Custom LLM integration
+
+```javascript
+"Here's your answer: 42.  Would you like an explanation?";
+```
+
+## Best practices
+
+### When to use flush
+
+
+  
+    Immediately confirm you've received and understood the user's request
+  
+
+  
+    Provide feedback during tool calls or processing that takes time
+  
+
+  
+    Create conversation breaks at logical points
+  
+
+  
+    Support external LLM integrations with processing delays
+  
+
+
+### When to avoid flush
+
+* **Every response** - Causes audio fragmentation
+* **Mid-sentence** - Breaks natural speech flow
+* **Short responses** - Normal buffering is sufficient
+* **Multiple per response** - Can create choppy audio
+
+### Implementation guidelines
+
+1. **Place at natural boundaries** - Use between complete thoughts or sentences
+2. **Test with your voice provider** - Effectiveness varies by provider
+3. **Monitor conversation quality** - Ensure audio remains smooth and natural
+4. **Document usage** - Include in code comments for team understanding
+
+## Advanced usage
+
+### Dynamic insertion
+
+```typescript
+const acknowledgment = "I understand your request";
+const detailedResponse = await processRequest(userInput);
+const responseWithFlush = `${acknowledgment}  ${detailedResponse}`;
+```
+
+### System prompt integration
+
+```javascript
+const systemPrompt = `When providing lengthy responses, use  after acknowledging the user's request to provide immediate feedback.`;
+```
+
+### Nested handling
+
+```javascript
+"Starting process...  Step 1 complete  Moving to step 2...";
+```
+
+## Troubleshooting
+
+
+  
+    **Cause**: `chunkPlan.enabled` is set to `false` or missing **Solution**: -
+    Verify `chunkPlan.enabled: true` in voice configuration - Check assistant
+    configuration in dashboard or API calls - Test with a minimal configuration
+    to isolate the issue
+  
+
+  {" "}
+
+  
+    **Cause**: Malformed flush syntax or typos **Solution**: - Use exact formats:
+    `
+      `, ``, or `` - Avoid extra parameters or attributes - Check for
+    typos in tag spelling
+  
+
+  
+    **Cause**: Overuse of flush syntax
+    **Solution**:
+
+    * Reduce flush frequency in responses
+    * Place only at sentence boundaries
+    * Test with real users to
+      validate experience
+  
+
+
+## Technical considerations
+
+### Provider compatibility
+
+* **Effectiveness varies** by voice provider
+* **Test thoroughly** with your chosen provider
+* **Monitor performance** impact on response times
+
+### Cost implications
+
+* **Increased API calls** to voice provider
+* **Higher usage** on usage-based pricing
+* **Monitor billing** if using flush frequently
+
+### VAPI-only feature
+
+* **Platform exclusive** - not available on other voice platforms
+* **Configuration dependent** - requires chunking enabled
+* **Version specific** - ensure using compatible VAPI version
+
+## Next steps
+
+Now that you understand flush syntax:
+
+* **[Voice formatting plan](/assistants/voice-formatting-plan):** Control voice output formatting and timing
+* **[Background messages](/assistants/background-messages):** Send messages during conversations
+* **[Custom tools](/tools/custom-tools):** Build tools that benefit from flush syntax feedback
+
+
+# Background messages
+
+> Silently update chat history with background messages
+
+## Overview
+
+Background messages let you add information to the chat history without interrupting or notifying the user. This is useful for logging actions, tracking background events, or updating conversation context silently.
+
+For example, you might want to log when a user presses a button or when a background process updates the conversation. These messages help you keep a complete record of the conversation and system events, all without disrupting the user experience.
+
+
+  
+    Add a button to your interface with an `onClick` event handler that will call a function to send the system message:
+
+    ```html
+    Log Action
+    ```
+  
+
+  
+    When the button is clicked, the `logUserAction` function will silently insert a system message into the chat history:
+
+    ```js
+    function logUserAction() {
+      // Function to log the user action
+      vapi.send({
+        type: "add-message",
+        message: {
+          role: "system",
+          content: "The user has pressed the button, say peanuts",
+        },
+      });
+    }
+    ```
+
+    * `vapi.send`: The primary function to interact with your assistant, handling various requests or commands.
+    * `type: "add-message"`: Specifies the command to add a new message.
+    * `message`: This is the actual message that you want to add to the message history.
+      * `role`: "system" Designates the message origin as 'system', ensuring the addition is unobtrusive. Other possible values of role are 'user' | 'assistant' | 'tool' | 'function'
+      * `content`: The actual message text to be added.
+  
+
+
+
+  * Silent logging of user activities.
+  * Contextual updates in conversations triggered by background processes.
+  * Non-intrusive user experience enhancements through additional information provision.
+
+
+
+# Idle messages
+
+> Keep users engaged during conversation pauses
+
+## Overview
+
+Idle messages automatically prompt users during periods of inactivity to maintain engagement and reduce call abandonment. They work alongside silence timeout messages to handle conversation flow during calls.
+
+**Idle messages help you:**
+
+* Re-engage users who become distracted or experience audio delays
+* Reduce call abandonment rates during silent periods
+* Provide proactive assistance when users hesitate or need guidance
+
+
+  Idle messages are automatically disabled during tool calls and warm transfers
+  to avoid interrupting system processes.
+
+
+## How idle messages work
+
+When a user stops speaking, Vapi starts a timer. After the configured timeout period, it randomly selects and speaks one of your idle messages. This process repeats until either the user responds or the maximum message count is reached.
+
+
+  
+    Timer starts when user stops speaking
+  
+
+  
+    Random message plays after timeout
+  
+
+  
+    Counter resets when user responds (optional)
+  
+
+
+## Configuration
+
+Configure idle messages in your assistant's `messagePlan`:
+
+
+  ```typescript title="TypeScript (Server SDK)"
+  import { VapiClient } from "@vapi-ai/server-sdk";
+
+  const client = new VapiClient({ token: process.env.VAPI_API_KEY });
+
+  const assistant = await client.assistants.create({
+  name: "Support Assistant",
+  messagePlan: {
+  idleMessages: [
+  "Are you still there?",
+  "Can I help you with anything else?",
+  "I'm here whenever you're ready to continue."
+  ],
+  idleTimeoutSeconds: 15,
+  idleMessageMaxSpokenCount: 3,
+  idleMessageResetCountOnUserSpeechEnabled: true
+  }
+  });
+
+  ```
+
+  ```python title="Python (Server SDK)"
+  from vapi import Vapi
+
+  client = Vapi(token=os.getenv("VAPI_API_KEY"))
+
+  assistant = client.assistants.create(
+      name="Support Assistant",
+      message_plan={
+          "idle_messages": [
+              "Are you still there?",
+              "Can I help you with anything else?",
+              "I'm here whenever you're ready to continue."
+          ],
+          "idle_timeout_seconds": 15,
+          "idle_message_max_spoken_count": 3,
+          "idle_message_reset_count_on_user_speech_enabled": True
+      }
+  )
+  ```
+
+  ```bash title="cURL"
+  curl -X POST "https://api.vapi.ai/assistant" \
+    -H "Authorization: Bearer $VAPI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "Support Assistant",
+      "messagePlan": {
+        "idleMessages": [
+          "Are you still there?",
+          "Can I help you with anything else?",
+          "I'"'"'m here whenever you'"'"'re ready to continue."
+        ],
+        "idleTimeoutSeconds": 15,
+        "idleMessageMaxSpokenCount": 3,
+        "idleMessageResetCountOnUserSpeechEnabled": true
+      }
+    }'
+  ```
+
+
+## Configuration options
+
+### Core settings
+
+| Parameter                                  | Type       | Range            | Default     | Description                               |
+| ------------------------------------------ | ---------- | ---------------- | ----------- | ----------------------------------------- |
+| `idleMessages`                             | `string[]` | ≤1000 chars each | `undefined` | Array of messages to randomly select from |
+| `idleTimeoutSeconds`                       | `number`   | 5-60 seconds     | 10          | Timeout before triggering first message   |
+| `idleMessageMaxSpokenCount`                | `number`   | 1-10 messages    | 3           | Maximum times to repeat messages          |
+| `idleMessageResetCountOnUserSpeechEnabled` | `boolean`  | -                | `false`     | Reset count when user speaks              |
+
+### Advanced configuration
+
+
+  
+    ```json
+    {
+      "messagePlan": {
+        "idleMessages": ["Are you still there?"],
+        "idleTimeoutSeconds": 10
+      }
+    }
+    ```
+  
+
+  
+    ```json
+    {
+      "messagePlan": {
+        "idleMessages": ["Hello, are you there?"],
+        "idleTimeoutSeconds": 15,
+        "idleMessageMaxSpokenCount": 5,
+        "idleMessageResetCountOnUserSpeechEnabled": true
+      }
+    }
+    ```
+  
+
+  
+    ```json
+    {
+      "messagePlan": {
+        "idleMessages": ["Can I help you with anything else?"],
+        "idleTimeoutSeconds": 20,
+        "silenceTimeoutMessage": "I'll end our call now. Thank you!"
+      },
+      "silenceTimeoutSeconds": 60
+    }
+    ```
+  
+
+
+## Multilingual support
+
+Handle multiple languages by creating language-specific assistants or dynamically updating messages:
+
+
+  
+    ```typescript
+    // English assistant
+    const enAssistant = await client.assistants.create({
+      name: "EN Support",
+      messagePlan: {
+        idleMessages: [
+          "Are you still there?",
+          "Can I help you with anything else?"
+        ]
+      }
+    });
+
+    // Spanish assistant
+    const esAssistant = await client.assistants.create({
+      name: "ES Support",
+      messagePlan: {
+        idleMessages: [
+          "¿Sigues ahí?",
+          "¿Puedo ayudarte con algo más?"
+        ]
+      }
+    });
+    ```
+  
+
+  
+    ```typescript
+    async function updateIdleMessagesForLanguage(
+      assistantId: string, 
+      detectedLanguage: string
+    ) {
+      const languageMessages = {
+        en: ['Are you still there?', 'Can I help you with anything else?'],
+        es: ['¿Sigues ahí?', '¿Puedo ayudarte con algo más?'],
+        fr: ['Êtes-vous toujours là?', 'Puis-je vous aider avec autre chose?']
+      };
+
+      await client.assistants.update(assistantId, {
+        messagePlan: {
+          idleMessages: languageMessages[detectedLanguage] || languageMessages['en']
+        }
+      });
+    }
+    ```
+  
+
+
+## Best practices
+
+### Message content guidelines
+
+* **Keep messages concise** - Users may be distracted, so shorter is better
+* **Use encouraging tone** - Avoid demanding or impatient language
+* **Offer specific help** - Guide users toward productive next steps
+
+
+  **Good examples:** - "Are you still there?" - "Is there anything specific you
+  need help with?" - "I'm here whenever you're ready to continue."
+
+
+
+  **Avoid:** - "Why aren't you responding?" - "Hello? Hello? Are you there?" -
+  Long explanations or complex questions
+
+
+### Timing recommendations
+
+Choose timeout duration based on your use case:
+
+
+  
+    **5-10 seconds** For transactional or time-sensitive interactions
+  
+
+  
+    **10-20 seconds** For general customer service and assistance
+  
+
+  
+    **20-30 seconds** For problem-solving or decision-making conversations
+  
+
+
+### Frequency management
+
+Balance engagement with user experience:
+
+```json
+{
+  "idleMessageMaxSpokenCount": 2,
+  "idleMessageResetCountOnUserSpeechEnabled": true,
+  "idleTimeoutSeconds": 15
+}
+```
+
+
+  Enable `idleMessageResetCountOnUserSpeechEnabled` to give users multiple
+  chances to engage throughout long conversations.
+
+
+## Troubleshooting
+
+### Messages not triggering
+
+
+  
+    Check that idle messages are properly configured:
+
+    ```typescript
+    const assistant = await client.assistants.get(assistantId);
+    console.log('Idle config:', assistant.messagePlan);
+    ```
+  
+
+  
+    Account for audio processing delays (2-3 seconds):
+
+    ```json
+    { "idleTimeoutSeconds": 12 }
+    ```
+  
+
+  
+    Ensure the maximum count hasn't been reached:
+
+    ```json
+    {
+      "idleMessageMaxSpokenCount": 5,
+      "idleMessageResetCountOnUserSpeechEnabled": true
+    }
+    ```
+  
+
+
+### Common issues and solutions
+
+
+  
+    **Solution:** Increase the timeout duration
+
+    ```json
+    { "idleTimeoutSeconds": 25 }
+    ```
+  
+
+  
+    **Solution:** Enable reset on user speech and increase max count
+
+    ```json
+    {
+      "idleMessageMaxSpokenCount": 5,
+      "idleMessageResetCountOnUserSpeechEnabled": true  
+    }
+    ```
+  
+
+  
+    **Solution:** This shouldn't happen - idle messages are automatically disabled during tool calls and transfers. If it persists, contact support.
+  
+
+
+## Limitations
+
+* **Static content**: Messages cannot be dynamically generated based on conversation context
+* **No context awareness**: Messages don't adapt to the current conversation topic
+* **Character limits**: Each message is limited to 1000 characters
+* **Processing delays**: Account for 2-3 seconds of audio processing time in your timeout settings
+
+## Next steps
+
+Now that you have idle messages configured:
+
+* **[Background messages](/assistants/background-messages):** Add contextual information silently
+* **[Assistant hooks](/assistants/assistant-hooks):** Handle call events and state changes
+* **[Voice formatting plan](/assistants/voice-formatting-plan):** Control speech patterns and delivery
+
+
+# Assistant hooks
+
+> Automate actions on call events and interruptions
+
+## Overview
+
+Assistant hooks let you automate actions when specific events occur during a call. Use hooks to transfer calls, run functions, or send messages in response to events like call ending or speech interruptions.
+
+Supported events include:
+
+* `call.ending`: When a call is ending
+* `assistant.speech.interrupted`: When the assistant's speech is interrupted
+* `customer.speech.interrupted`: When the customer's speech is interrupted
+
+You can combine actions and add filters to control when hooks trigger.
+
+## How hooks work
+
+Hooks are defined in the `hooks` array of your assistant configuration. Each hook includes:
+
+* `on`: The event that triggers the hook
+* `do`: The actions to perform (supports `transfer`, `function`, and `say`)
+* `filters`: (Optional) Conditions that must be met for the hook to trigger
+
+
+  The `call.endedReason` filter can be set to any of the [call ended reasons](/api-reference/calls/get#response.body.endedReason).\
+  The transfer destination type follows the [transfer call tool destinations](/api-reference/tools/create#request.body.transferCall.destinations) schema.
+
+
+## Example: Transfer on pipeline error
+
+Transfer a call to a fallback number if a pipeline error occurs:
+
+```json
+{
+  "hooks": [{
+    "on": "call.ending",
+    "filters": [{
+      "type": "oneOf",
+      "key": "call.endedReason",
+      "oneOf": ["pipeline-error"]
+    }],
+    "do": [{
+      "type": "transfer",
+      "destination": {
+        "type": "number",
+        "number": "+1234567890",
+        "callerId": "+1987654321"
+      }
+    }]
+  }]
+}
+```
+
+You can also transfer to a SIP destination:
+
+```json
+{
+  "hooks": [{
+    "on": "call.ending",
+    "filters": [{
+      "type": "oneOf",
+      "key": "call.endedReason",
+      "oneOf": ["pipeline-error"]
+    }],
+    "do": [{
+      "type": "transfer",
+      "destination": {
+        "type": "sip",
+        "sipUri": "sip:user@domain.com"
+      }
+    }]
+  }]
+}
+```
+
+## Example: Combine actions on pipeline error
+
+Perform multiple actions—say a message, call a function, and transfer the call—when a pipeline error occurs:
+
+```json
+{
+  "hooks": [{
+    "on": "call.ending",
+    "filters": [{
+      "type": "oneOf",
+      "key": "call.endedReason",
+      "oneOf": ["pipeline-error"]
+    }],
+    "do": [
+      {
+        "type": "say",
+        "exact": "I apologize for the technical difficulty. Let me transfer you to our support team."
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "log_error",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "error_type": {
+                "type": "string",
+                "value": "pipeline_error"
+              }
+            }
+          },
+          "description": "Logs the error details for monitoring"
+        },
+        "async": true,
+        "server": {
+          "url": "https://your-server.com/api"
+        }
+      },
+      {
+        "type": "transfer",
+        "destination": {
+          "type": "number",
+          "number": "+1234567890",
+          "callerId": "+1987654321"
+        }
+      }
+    ]
+  }]
+}
+```
+
+## Example: Handle speech interruptions
+
+Respond when the assistant's speech is interrupted by the customer:
+
+```json
+{
+  "hooks": [{
+    "on": "assistant.speech.interrupted",
+    "do": [{
+      "type": "say",
+      "exact": ["Sorry about that", "Go ahead", "Please continue"]
+    }]
+  }]
+}
+```
+
+Handle customer speech interruptions in a similar way:
+
+```json
+{
+  "hooks": [{
+    "on": "customer.speech.interrupted",
+    "do": [{
+      "type": "say",
+      "exact": "I apologize for interrupting. Please continue."
+    }]
+  }]
+}
+```
+
+
+  Use `"oneOf": ["pipeline-error"]` as a catch-all filter for any pipeline-related error reason.
+
+
+## Common use cases
+
+* Transfer to a human agent on errors
+* Route to a fallback system if the assistant fails
+* Handle customer or assistant interruptions gracefully
+* Log errors or events for monitoring
+
+## Slack Webhook on Call Failure
+
+You can set up automatic Slack notifications when calls fail by combining assistant hooks with Slack webhooks. This is useful for monitoring call quality and getting immediate alerts when issues occur.
+
+### Step 1: Generate a Slack webhook
+
+Follow the [Slack webhook documentation](https://api.slack.com/messaging/webhooks) to create an incoming webhook:
+
+1. Create a Slack app (if you don't have one already)
+2. Enable incoming webhooks in your app settings
+3. Create an incoming webhook for your desired channel
+4. Copy the webhook URL (it will look like `https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX`)
+
+### Step 2: Create a serverless function
+
+Set up a serverless function (using a service like [val.town](https://val.town)) to convert Vapi tool call requests into Slack messages:
+
+```javascript
+export default async function(req: Request): Promise {
+  try {
+    const json = await req.json();
+    console.log(json);
+    
+    const callId = json.message.call.id;
+    const reason = json.message.toolCalls[0].function.arguments.properties.callEndedReason.value;
+    
+    fetch("", {
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: `🚨 Call Failed\nCall ID: ${callId}\nReason: ${reason}`
+      }),
+    });
+    
+    return Response.json({
+      results: [{ 
+        "result": "success", 
+        "toolCallId": "hook-function-call" 
+      }],
+    });
+  } catch (err) {
+    console.error("JSON parsing error:", err);
+    return new Response("Invalid JSON", { status: 400 });
+  }
+}
+```
+
+### Step 3: Configure the assistant hook
+
+Add this hook configuration to your assistant to trigger Slack notifications on call failures:
+
+```json
+{
+  "hooks": [{
+    "on": "call.ending",
+    "filters": [{
+      "type": "oneOf",
+      "key": "call.endedReason",
+      "oneOf": ["pipeline-error"]
+    }],
+    "do": [{
+      "type": "function",
+      "function": {
+        "name": "report_error",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "value": "A call error occurred."
+            }
+          }
+        },
+        "description": "Reports a call error to Slack."
+      },
+      "async": false,
+      "server": {
+        "url": ""
+      }
+    }]
+  }]
+}
+```
+
+
+  Replace `` with your actual Slack webhook URL and `` with your serverless function endpoint.
+
+
+
+# Background speech denoising
+
+> Filter out noise and background speech while users are talking
+
+## Overview
+
+Background speech denoising helps create clearer conversations by filtering out unwanted sounds while users speak. Vapi offers two complementary denoising technologies that can be used independently or together for optimal results.
+
+**In this guide, you'll learn to:**
+
+* Enable Smart Denoising using Krisp technology (recommended for most users)
+* Configure experimental Fourier denoising with customizable parameters
+* Combine both methods for enhanced noise reduction
+* Fine-tune settings for different environments
+
+
+  **For most use cases, Smart Denoising alone provides excellent results.** Fourier denoising is a highly experimental feature that requires significant tuning and may not work well in all environments.
+
+
+## Denoising methods
+
+### Smart Denoising (Krisp)
+
+Smart Denoising uses Krisp's AI-powered technology to remove background noise in real-time. This method is highly effective for common noise sources like:
+
+* Keyboard typing
+* Background conversations
+* Traffic and street noise
+* Air conditioning and fans
+* Pet sounds
+
+### Fourier Denoising (Experimental)
+
+Fourier denoising uses frequency-domain filtering to remove consistent background noise. This experimental method offers fine-grained control through multiple parameters and includes automatic media detection for TV/music/radio backgrounds.
+
+
+  Fourier denoising is highly experimental and comes with significant limitations:
+
+  * Requires extensive tweaking to work properly
+  * May not work well in all audio environments (e.g., when headphones are used)
+  * Can introduce audio artifacts or distortions
+  * Should only be used when Smart Denoising alone is insufficient
+
+  **For most users, Smart Denoising should be sufficient.** Only proceed with Fourier denoising if you have specific requirements and are prepared to test extensively.
+
+
+## Configuration
+
+Background speech denoising is configured through the `backgroundSpeechDenoisingPlan` property on your assistant:
+
+
+  ```typescript title="TypeScript SDK"
+  import { VapiClient } from "@vapi-ai/server-sdk";
+
+  const vapi = new VapiClient({ 
+    token: process.env.VAPI_API_KEY 
+  });
+
+  const assistant = await vapi.assistants.create({
+    name: "Customer Support",
+    backgroundSpeechDenoisingPlan: {
+      // Enable Smart Denoising
+      smartDenoisingPlan: {
+        enabled: true
+      },
+      // Enable Fourier Denoising (optional)
+      fourierDenoisingPlan: {
+        enabled: true,
+        mediaDetectionEnabled: true,
+        staticThreshold: -35,
+        baselineOffsetDb: -15,
+        windowSizeMs: 3000,
+        baselinePercentile: 85
+      }
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  from vapi import Vapi
+  import os
+
+  client = Vapi(token=os.getenv("VAPI_API_KEY"))
+
+  assistant = client.assistants.create(
+      name="Customer Support",
+      backgroundSpeechDenoisingPlan={
+          # Enable Smart Denoising
+          "smartDenoisingPlan": {
+              "enabled": True
+          },
+          # Enable Fourier Denoising (optional)
+          "fourierDenoisingPlan": {
+              "enabled": True,
+              "mediaDetectionEnabled": True,
+              "staticThreshold": -35,
+              "baselineOffsetDb": -15,
+              "windowSizeMs": 3000,
+              "baselinePercentile": 85
+          }
+      }
+  )
+  ```
+
+  ```bash title="cURL"
+  curl -X POST "https://api.vapi.ai/assistant" \
+       -H "Authorization: Bearer $VAPI_API_KEY" \
+       -H "Content-Type: application/json" \
+       -d '{
+         "name": "Customer Support",
+         "backgroundSpeechDenoisingPlan": {
+           "smartDenoisingPlan": {
+             "enabled": true
+           },
+           "fourierDenoisingPlan": {
+             "enabled": true,
+             "mediaDetectionEnabled": true,
+             "staticThreshold": -35,
+             "baselineOffsetDb": -15,
+             "windowSizeMs": 3000,
+             "baselinePercentile": 85
+           }
+         }
+       }'
+  ```
+
+
+## Smart Denoising configuration
+
+Smart Denoising has a simple on/off configuration:
+
+
+  Enable or disable Krisp-powered smart denoising
+
+
+### Example: Smart Denoising only
+
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    name: "Support Agent",
+    backgroundSpeechDenoisingPlan: {
+      smartDenoisingPlan: {
+        enabled: true
+      }
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  assistant = client.assistants.create(
+      name="Support Agent",
+      backgroundSpeechDenoisingPlan={
+          "smartDenoisingPlan": {
+              "enabled": True
+          }
+      }
+  )
+  ```
+
+
+## Fourier Denoising configuration
+
+Fourier denoising offers multiple parameters for fine-tuning:
+
+
+  Enable or disable experimental Fourier denoising
+
+
+
+  Automatically detect and filter consistent background media (TV/music/radio)
+
+
+
+  Fallback threshold in dB when no baseline is established (-80 to 0)
+
+
+
+  How far below the rolling baseline to filter audio, in dB (-30 to -5)
+
+  * Lower values (e.g., -10) = more aggressive filtering
+  * Higher values (e.g., -20) = more conservative filtering
+
+
+
+  Rolling window size in milliseconds for baseline calculation (1000 to 30000)
+
+  * Larger windows = slower adaptation, more stability
+  * Smaller windows = faster adaptation, less stability
+
+
+
+  Percentile for baseline calculation (1 to 99)
+
+  * Higher percentiles (e.g., 85) = focus on louder speech
+  * Lower percentiles (e.g., 50) = include quieter speech
+
+
+### Example: Adding Fourier Denoising to Smart Denoising
+
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    name: "Call Center Agent",
+    backgroundSpeechDenoisingPlan: {
+      // Always enable Smart Denoising first
+      smartDenoisingPlan: {
+        enabled: true
+      },
+      // Add Fourier Denoising for additional filtering
+      fourierDenoisingPlan: {
+        enabled: true,
+        mediaDetectionEnabled: true,
+        // More aggressive filtering for noisy environments
+        baselineOffsetDb: -10,
+        // Faster adaptation for dynamic environments
+        windowSizeMs: 2000,
+        // Focus on louder, clearer speech
+        baselinePercentile: 90
+      }
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  assistant = client.assistants.create(
+      name="Call Center Agent",
+      backgroundSpeechDenoisingPlan={
+          # Always enable Smart Denoising first
+          "smartDenoisingPlan": {
+              "enabled": True
+          },
+          # Add Fourier Denoising for additional filtering
+          "fourierDenoisingPlan": {
+              "enabled": True,
+              "mediaDetectionEnabled": True,
+              # More aggressive filtering for noisy environments
+              "baselineOffsetDb": -10,
+              # Faster adaptation for dynamic environments
+              "windowSizeMs": 2000,
+              # Focus on louder, clearer speech
+              "baselinePercentile": 90
+          }
+      }
+  )
+  ```
+
+
+## Combined denoising
+
+For maximum noise reduction, combine both methods. Processing order:
+
+1. Smart Denoising (Krisp) processes first
+2. Fourier Denoising processes the Krisp output
+
+## Environment-specific configurations
+
+### Quiet office environment
+
+Minimal speech denoising for clear environments:
+
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    name: "Office Assistant",
+    backgroundSpeechDenoisingPlan: {
+      smartDenoisingPlan: {
+        enabled: true
+      }
+      // No Fourier denoising needed
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  assistant = client.assistants.create(
+      name="Office Assistant",
+      backgroundSpeechDenoisingPlan={
+          "smartDenoisingPlan": {
+              "enabled": True
+          }
+          # No Fourier denoising needed
+      }
+  )
+  ```
+
+
+### Noisy call center
+
+Aggressive filtering for high-noise environments:
+
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    name: "Call Center Agent",
+    backgroundSpeechDenoisingPlan: {
+      smartDenoisingPlan: {
+        enabled: true
+      },
+      fourierDenoisingPlan: {
+        enabled: true,
+        mediaDetectionEnabled: true,
+        baselineOffsetDb: -10, // Aggressive filtering
+        windowSizeMs: 2000,    // Fast adaptation
+        baselinePercentile: 90 // Focus on clear speech
+      }
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  assistant = client.assistants.create(
+      name="Call Center Agent",
+      backgroundSpeechDenoisingPlan={
+          "smartDenoisingPlan": {
+              "enabled": True
+          },
+          "fourierDenoisingPlan": {
+              "enabled": True,
+              "mediaDetectionEnabled": True,
+              "baselineOffsetDb": -10,  # Aggressive filtering
+              "windowSizeMs": 2000,      # Fast adaptation
+              "baselinePercentile": 90   # Focus on clear speech
+          }
+      }
+  )
+  ```
+
+
+### Home environment with TV/music
+
+Optimized for media background noise:
+
+
+  ```typescript title="TypeScript SDK"
+  const assistant = await vapi.assistants.create({
+    name: "Home Assistant",
+    backgroundSpeechDenoisingPlan: {
+      smartDenoisingPlan: {
+        enabled: true
+      },
+      fourierDenoisingPlan: {
+        enabled: true,
+        mediaDetectionEnabled: true, // Essential for TV/music
+        baselineOffsetDb: -15,
+        windowSizeMs: 4000,
+        baselinePercentile: 80
+      }
+    }
+  });
+  ```
+
+  ```python title="Python SDK"
+  assistant = client.assistants.create(
+      name="Home Assistant",
+      backgroundSpeechDenoisingPlan={
+          "smartDenoisingPlan": {
+              "enabled": True
+          },
+          "fourierDenoisingPlan": {
+              "enabled": True,
+              "mediaDetectionEnabled": True,  # Essential for TV/music
+              "baselineOffsetDb": -15,
+              "windowSizeMs": 4000,
+              "baselinePercentile": 80
+          }
+      }
+  )
+  ```
+
+
+## Best practices
+
+
+  **For most users, Smart Denoising alone is the recommended solution.** It handles the vast majority of common noise scenarios effectively without configuration complexity. Only consider adding Fourier denoising if you have specific requirements that Smart Denoising cannot address.
+
+
+### When to use each method
+
+**Smart Denoising only:**
+
+* General-purpose noise reduction
+* Unpredictable noise patterns
+* When simplicity is preferred
+
+**Smart Denoising + Fourier Denoising:**
+
+* Maximum noise reduction required
+* Consistent background noise that Smart Denoising alone cannot fully handle
+* Complex acoustic environments with media (TV/music/radio)
+* Premium user experiences requiring fine-tuned control
+* Willing to invest time in testing and tuning
+* Not using headphones (Fourier may cause issues with headphone audio)
+
+
+  Fourier Denoising should never be used alone. It's designed to complement Smart Denoising by providing additional filtering after Krisp has done the initial noise reduction.
+
+
+### Performance considerations
+
+**Audio quality**: Aggressive filtering may affect voice quality. Test different settings to find the right balance between noise reduction and natural speech preservation.
+
+### Testing recommendations
+
+1. Test in your target environment
+2. Start with default settings
+3. Adjust parameters incrementally
+4. Monitor user feedback
+5. A/B test different configurations
+
+## Troubleshooting fourier denoising
+
+
+  
+    Reduce filtering aggressiveness:
+
+    * Increase `baselineOffsetDb` (e.g., -20 instead of -15)
+    * Decrease `baselinePercentile` (e.g., 75 instead of 85)
+    * Try Smart Denoising only
+  
+
+  
+    Increase filtering:
+
+    * Enable both denoising methods
+    * Decrease `baselineOffsetDb` (e.g., -12 instead of -15)
+    * Ensure `mediaDetectionEnabled` is true for TV/music
+  
+
+  
+    Adjust detection sensitivity:
+
+    * Increase `windowSizeMs` for more stability
+    * Adjust `staticThreshold` if baseline isn't establishing
+    * Check if user's voice level is consistent
+  
+
+
+
+# Speech configuration
+
+> Control when your assistant starts and stops speaking
+
+## Overview
+
+Speech configuration lets you control exactly when your assistant starts and stops speaking during a conversation. By tuning these settings, you can make your assistant feel more natural, avoid interrupting the customer, and reduce awkward pauses.
+
+
+  Speech speed can be controlled, but only PlayHT currently supports this feature with the `speed` field. Other providers do not currently support speed.
+
+
+The two main components are:
+
+* **Speaking Plan**: Controls when the assistant begins speaking after the customer finishes or pauses.
+* **Stop Speaking Plan**: Controls when the assistant stops speaking if the customer starts talking.
+
+Fine-tuning these plans helps you adapt the assistant's responsiveness to your use case—whether you want fast, snappy replies or a more patient, human-like conversation flow.
+
+
+  Currently, these configurations can only be set via API.
+
+
+The rest of this page explains each setting and provides practical examples for different scenarios.
+
+## Start Speaking Plan
+
+This plan defines the parameters for when the assistant begins speaking after the customer pauses or finishes.
+
+* **Wait Time Before Speaking**: You can set how long the assistant waits before speaking after the customer finishes. The default is 0.4 seconds, but you can increase it if the assistant is speaking too soon, or decrease it if there's too much delay.
+  **Example:** For tech support calls, set `waitSeconds` for the assistant to more than 1.0 seconds to give customers time to complete their thoughts, even if they have some pauses in between.
+
+* **Smart Endpointing Plan**: This feature uses advanced processing to detect when the customer has truly finished speaking, especially if they pause mid-thought. It can be configured in three ways:
+
+  * **Off**: Disabled by default
+  * **LiveKit**: Recommended for English conversations as it provides the most sophisticated solution for detecting natural speech patterns and pauses. LiveKit can be fine-tuned using the `waitFunction` parameter to adjust response timing based on the probability that the user is still speaking.
+  * **Vapi**: Recommended for non-English conversations or as an alternative when LiveKit isn't suitable
+
+  ![LiveKit Smart Endpointing Configuration](file:3273bb67-764c-4346-99bc-57cb8d289789)
+
+  **LiveKit Smart Endpointing Configuration:**
+  When using LiveKit, you can customize the `waitFunction` parameter which determines how long the bot will wait to start speaking based on the likelihood that the user has finished speaking:
+
+  ```
+  waitFunction: "200 + 8000 * x"
+  ```
+
+  This function maps probabilities (0-1) to milliseconds of wait time. A probability of 0 means high confidence the caller has stopped speaking, while 1 means high confidence they're still speaking. The default function (`200 + 8000 * x`) creates a wait time between 200ms (when x=0) and 8200ms (when x=1). You can customize this with your own mathematical expression, such as `4000 * (1 - cos(pi * x))` for a different response curve.
+
+  **Example:** In insurance claims, smart endpointing helps avoid interruptions while customers think through complex responses. For instance, when the assistant asks "do you want a loan," the system can intelligently wait for the complete response rather than interrupting after the initial "yes" or "no." For responses requiring number sequences like "What's your account number?", the system can detect natural pauses between digits without prematurely ending the customer's turn to speak.
+
+* **Transcription-Based Detection**: Customize how the assistant determines that the customer has stopped speaking based on what they're saying. This offers more control over the timing. **Example:** When a customer says, "My account number is 123456789, I want to transfer \$500."
+  * The system detects the number "123456789" and waits for 0.5 seconds (`WaitSeconds`) to ensure the customer isn't still speaking.
+  * If the customer were to finish with an additional line, "I want to transfer \$500.", the system uses `onPunctuationSeconds` to confirm the end of the speech and then proceed with the request processing.
+  * In a scenario where the customer has been silent for a long and has already finished speaking but the transcriber is not confident to punctuate the transcription, `onNoPunctuationSeconds` is used for 1.5 seconds.
+
+## Stop Speaking Plan
+
+The Stop Speaking Plan defines when the assistant stops talking after detecting customer speech.
+
+* **Words to Stop Speaking**: Define how many words the customer needs to say before the assistant stops talking. If you want immediate reaction, set this to 0. Increase it to avoid interruptions by brief acknowledgments like "okay" or "right". **Example:** While setting an appointment with a clinic, set `numWords` to 2-3 words to allow customers to finish brief clarifications without triggering interruptions.
+
+* **Voice Activity Detection**: Adjust how long the customer needs to be speaking before the assistant stops. The default is 0.2 seconds, but you can tweak this to balance responsiveness and avoid false triggers.
+  **Example:** For a banking call center, setting a higher `voiceSeconds` value ensures accuracy by reducing false positives. This avoids interruptions caused by background sounds, even if it slightly delays the detection of speech onset. This tradeoff is essential to ensure the assistant processes only correct and intended information.
+
+* **Pause Before Resuming**: Control how long the assistant waits before starting to talk again after being interrupted. The default is 1 second, but you can adjust it depending on how quickly the assistant should resume.
+  **Example:** For quick queries (e.g., "What's the total order value in my cart?"), set `backoffSeconds` to 1 second.
+
+Here's a code snippet for Stop Speaking Plan -
+
+```json
+ "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.2,
+    "backoffSeconds": 1                                                                
+  }
+```
+
+## Considerations for Configuration
+
+* **Customer Style**: Think about whether the customer pauses mid-thought or provides continuous speech. Adjust wait times and enable smart endpointing as needed.
+
+* **Background Noise**: If there's a lot of background noise, you may need to tweak the settings to avoid false triggers. Default for phone calls is 'office' and default for web calls is 'off'.
+
+```json
+  "backgroundSound": "off",
+```
+
+* **Conversation Flow**: Aim for a balance where the assistant is responsive but not intrusive. Test different settings to find the best fit for your needs.
+
+
+# Voice pipeline configuration
+
+> Complete guide to configuring VAPI's voice pipeline for optimal conversation timing and interruption handling
+
+## Overview
+
+Configure VAPI's voice pipeline to create natural conversation experiences through precise timing control. This guide covers how voice data moves through processing stages and how to optimize endpointing and interruption detection.
+
+**Voice pipeline configuration enables you to:**
+
+* Fine-tune conversation timing for specific use cases
+* Control when and how your assistant begins responding
+* Configure interruption detection and recovery behavior
+* Optimize response timing for different languages and contexts
+
+For implementation examples, see **[Configuration examples](#configuration-examples)**.
+
+## Quick start
+
+### English conversations (recommended)
+
+```json
+{
+  "startSpeakingPlan": {
+    "smartEndpointingPlan": {
+      "provider": "livekit",
+      "waitFunction": "2000 / (1 + exp(-10 * (x - 0.5)))"
+    },
+    "waitSeconds": 0.4
+  },
+  "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.2,
+    "backoffSeconds": 1.0
+  }
+}
+```
+
+**What this provides:**
+
+* Smart endpointing detects when users finish speaking (English only)
+* Fast interruption using voice detection (50-100ms response)
+* Natural timing with balanced wait periods
+
+### Non-English languages
+
+```json
+{
+  "startSpeakingPlan": {
+    "transcriptionEndpointingPlan": {
+      "onPunctuationSeconds": 0.1,
+      "onNoPunctuationSeconds": 1.5,
+      "onNumberSeconds": 0.5
+    },
+    "waitSeconds": 0.4
+  },
+  "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.2,
+    "backoffSeconds": 1.0
+  }
+}
+```
+
+**What this provides:**
+
+* Text-based endpointing works with any language
+* Punctuation detection for natural conversation flow
+* Same fast interruption and timing as English setup
+
+## Voice pipeline flow
+
+### Complete processing pipeline
+
+```
+User Audio → VAD → Transcription → Start Speaking Decision → LLM → TTS → waitSeconds → Assistant Audio
+```
+
+### Start speaking process
+
+
+  
+    Voice Activity Detection (VAD) detects utterance-stop
+  
+
+  
+    System evaluates completion using: - Custom Rules (highest priority) - Smart
+    Endpointing Plan (LiveKit for English) - Transcription Endpointing Plan
+    (fallback)
+  
+
+  
+    LLM request sent immediately → TTS processes → waitSeconds applied →
+    Assistant speaks
+  
+
+
+### Stop speaking process
+
+
+  
+    VAD detects utterance-start during assistant speech
+  
+
+  
+    System checks for: - `interruptionPhrases` → Instant pipeline clear -
+    `acknowledgementPhrases` → Ignore interruption - Threshold evaluation based
+    on `numWords` setting
+  
+
+  
+    If threshold met → Clear pipeline → Apply `backoffSeconds` → Ready for next
+    input
+  
+
+
+## Start speaking plan
+
+The start speaking plan determines when your assistant begins responding after a user stops talking.
+
+### Transcription endpointing
+
+Analyzes transcription text to determine user completion based on patterns like punctuation and numbers.
+
+
+  
+    ```json
+    {
+      "startSpeakingPlan": {
+        "transcriptionEndpointingPlan": {
+          "onPunctuationSeconds": 0.1,
+          "onNoPunctuationSeconds": 1.5,
+          "onNumberSeconds": 0.5
+        },
+        "waitSeconds": 0.4
+      }
+    }
+    ```
+  
+
+  
+    **onPunctuationSeconds** (Default: 0.1)\
+    Wait time after punctuation marks are detected
+
+    **onNoPunctuationSeconds** (Default: 1.5)
+    Wait time when no punctuation is detected
+
+    **onNumberSeconds** (Default: 0.5)
+    Wait time after numbers are detected
+  
+
+
+**When to use:**
+
+* Non-English languages (LiveKit not supported)
+* Fallback when smart endpointing unavailable
+* Predictable, rule-based endpointing behavior
+
+### Smart endpointing
+
+Uses AI models to analyze speech patterns, context, and audio cues to predict when users have finished speaking. Only available for English conversations.
+
+
+  
+    ```json
+    {
+      "startSpeakingPlan": {
+        "smartEndpointingPlan": {
+          "provider": "livekit",
+          "waitFunction": "2000 / (1 + exp(-10 * (x - 0.5)))"
+        },
+        "waitSeconds": 0.4
+      }
+    }
+    ```
+  
+
+  
+    **livekit**\
+    Advanced model trained on conversation data (recommended for English)
+
+    **vapi**
+    Alternative VAPI-trained model
+  
+
+
+**When to use:**
+
+* English conversations
+* Natural conversation flow requirements
+* Reduced false endpointing triggers
+
+### Wait function
+
+Mathematical expression that determines wait time based on speech completion probability. The function takes a confidence value (0-1) and returns a wait time in milliseconds.
+
+**Aggressive (Fast Response):**
+
+```json
+"waitFunction": "2000 / (1 + exp(-10 * (x - 0.5)))"
+```
+
+* **Behavior:** Responds quickly when confident user is done speaking
+* **Use case:** Customer service, gaming, real-time interactions
+* **Timing:** \~200ms wait at 50% confidence, \~50ms at 90% confidence
+
+**Normal (Balanced):**
+
+```json
+"waitFunction": "(20 + 500 * sqrt(x) + 2500 * x^3 + 700 + 4000 * max(0, x-0.5)) / 2"
+```
+
+* **Behavior:** Waits for natural pauses in conversation
+* **Use case:** Most conversations, general purpose
+* **Timing:** \~800ms wait at 50% confidence, \~300ms at 90% confidence
+
+**Conservative (Careful Response):**
+
+```json
+"waitFunction": "700 + 4000 * max(0, x-0.5)"
+```
+
+* **Behavior:** Very patient, rarely interrupts users
+* **Use case:** Healthcare, formal settings, sensitive conversations
+* **Timing:** \~2700ms wait at 50% confidence, \~700ms at 90% confidence
+
+### Wait seconds
+
+Final audio delay applied after all processing completes, before the assistant speaks.
+
+**Range:** 0-5 seconds (Default: 0.4)
+
+**Recommended settings:**
+
+* **0.0-0.2:** Gaming, real-time interactions
+* **0.3-0.5:** Standard conversations, customer service
+* **0.6-0.8:** Healthcare, formal settings
+
+#### Pipeline timing relationship
+
+`waitSeconds` is applied at the END of the voice pipeline processing:
+
+```
+Endpointing Triggers → LLM Processes → TTS Generates → waitSeconds Delay → Assistant Speaks
+```
+
+**Relationship with other timing components:**
+
+* **Endpointing timing:** Varies by method (smart vs transcription)
+* **LLM processing:** \~800ms average for standard responses
+* **TTS generation:** \~500ms average for short responses
+* **waitSeconds:** Applied as final delay before audio output
+
+#### Complete pipeline timeline
+
+Understanding exact timing helps optimize your voice pipeline configuration. This timeline shows what happens at every moment during the conversation flow.
+
+```
+0.0s: User stops speaking
+0.1s: Smart endpointing evaluation begins
+0.6s: Smart endpointing triggers (varies by waitFunction)
+0.6s: LLM request sent immediately
+1.4s: LLM response received (0.8s processing)
+1.9s: TTS audio generated (0.5s processing)
+1.9s: waitSeconds (0.4s) starts
+2.3s: Assistant begins speaking
+```
+
+**Total Response Time:** Smart Endpointing (0.6s) + LLM (0.8s) + TTS (0.5s) + waitSeconds (0.4s) = **2.3s**
+
+**Key optimization insights:**
+
+* The 0.6s endpointing time varies based on your waitFunction choice
+* Aggressive functions reduce endpointing to \~0.2s
+* Conservative functions increase endpointing to \~2.7s
+* Total response time ranges from 1.9s (aggressive) to 4.7s (conservative)
+
+### Custom endpointing rules
+
+Highest priority rules that override all other endpointing decisions when patterns match.
+
+```json
+{
+  "customEndpointingRules": [
+    {
+      "type": "assistant",
+      "regex": "(phone|email|address)",
+      "timeoutSeconds": 3.0
+    },
+    {
+      "type": "user",
+      "regex": "\\d{3}-\\d{3}-\\d{4}",
+      "timeoutSeconds": 2.0
+    }
+  ]
+}
+```
+
+**Use cases:**
+
+* **Data collection:** Extended wait times for phone numbers, addresses
+* **Spelling:** Extra time for letter-by-letter input
+* **Complex responses:** Additional processing time for detailed information
+
+## Stop speaking plan
+
+The stop speaking plan controls how interruptions are detected and handled when users speak while the assistant is talking.
+
+### Number of words
+
+Sets the interruption detection method and threshold.
+
+**VAD-based (numWords = 0):**
+
+```json
+{
+  "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.2
+  }
+}
+```
+
+* **How it works:** Uses Voice Activity Detection for faster interruption (50-100ms)
+* **Benefits:** Language independent, very responsive
+* **Considerations:** More sensitive to background noise
+
+**Transcription-based (numWords > 0):**
+
+```json
+{
+  "stopSpeakingPlan": {
+    "numWords": 2
+  }
+}
+```
+
+* **How it works:** Waits for specified number of transcribed words
+* **Benefits:** More accurate, reduces false positives
+* **Considerations:** Slower response (200-500ms delay)
+
+**Range:** 0-10 words (Default: 0)
+
+### Voice seconds
+
+VAD duration threshold when `numWords = 0`. Determines how long voice activity must be detected before triggering an interruption.
+
+**Range:** 0-0.5 seconds (Default: 0.2)
+
+**Recommended settings:**
+
+* **0.1:** Very sensitive (risk of background noise triggering)
+* **0.2:** Balanced sensitivity (recommended)
+* **0.4:** Conservative (reduces false positives)
+
+#### The numWords=0 and voiceSeconds relationship
+
+When `numWords = 0`, the voice pipeline uses **Voice Activity Detection (VAD)** instead of waiting for transcription:
+
+```
+User Starts Speaking → VAD Detects Voice → Continuous for voiceSeconds Duration → Interrupt Assistant
+```
+
+**Why this matters:**
+
+* **Faster:** VAD detection \~50-100ms vs transcription 200-500ms
+* **More sensitive:** Detects "um", "uh", throat clearing, background noise
+* **Language independent:** Works with any language
+
+### Backoff seconds
+
+Duration that blocks all assistant audio output after user interruption, creating a recovery period.
+
+**Range:** 0-10 seconds (Default: 1.0)
+
+**Recommended settings:**
+
+* **0.5:** Quick recovery for fast-paced interactions
+* **1.0:** Natural pause for most conversations
+* **2.0:** Deliberate pause for formal settings
+
+#### Pipeline timing relationship
+
+```
+User Interrupts → Assistant Audio Stopped → backoffSeconds Blocks All Output → Ready for New Input
+```
+
+**Relationship with waitSeconds:**
+
+* `backoffSeconds`: Applied during interruption (blocks output)
+* `waitSeconds`: Applied to normal responses (delays output)
+* **Sequential, not cumulative:** `backoffSeconds` completes first, then normal flow resumes with `waitSeconds`
+
+#### Complete interruption timeline
+
+**How to read this timeline:** This shows the complete flow from interruption to recovery. Notice how backoffSeconds creates a "quiet period" before normal processing resumes.
+
+```
+0.0s: Assistant speaking: "I can help you book..."
+1.2s: User interrupts: "Actually, wait"
+1.2s: backoffSeconds (1.0s) starts → All audio blocked
+2.2s: backoffSeconds completes → Ready for new input
+2.5s: User says: "What about tomorrow?"
+3.0s: Endpointing triggers → LLM processes
+3.8s: TTS completes → waitSeconds (0.4s) starts
+4.2s: Assistant responds: "For tomorrow..."
+```
+
+**Total Recovery Time:** backoffSeconds (1.0s) + normal processing (1.8s) + waitSeconds (0.4s) = **3.2s**
+
+**Key insight:** Adjust backoffSeconds based on how quickly you want the assistant to recover from interruptions. Healthcare might use 2.0s for deliberate pauses, while gaming might use 0.5s for quick recovery.
+
+## Configuration examples
+
+### E-commerce customer support
+
+```json
+{
+  "startSpeakingPlan": {
+    "waitSeconds": 0.4,
+    "smartEndpointingPlan": {
+      "provider": "livekit",
+      "waitFunction": "2000 / (1 + exp(-10 * (x - 0.5)))"
+    }
+  },
+  "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.15,
+    "backoffSeconds": 0.8
+  }
+}
+```
+
+**Optimized for:** Fast response to quick customer queries, efficient order status and product questions.
+
+### Non-English languages (Spanish example)
+
+```json
+{
+  "transcriber": { "language": "es" },
+  "startSpeakingPlan": {
+    "waitSeconds": 0.4,
+    "transcriptionEndpointingPlan": {
+      "onPunctuationSeconds": 0.1,
+      "onNoPunctuationSeconds": 2.0
+    }
+  },
+  "stopSpeakingPlan": {
+    "numWords": 0,
+    "voiceSeconds": 0.3,
+    "backoffSeconds": 1.2
+  }
+}
+```
+
+**Optimized for:** Text-based endpointing with longer timeouts for different speech patterns and international support.
+
+### Education and training
+
+```json
+{
+  "startSpeakingPlan": {
+    "waitSeconds": 0.7,
+    "smartEndpointingPlan": {
+      "provider": "livekit",
+      "waitFunction": "(20 + 500 * sqrt(x) + 2500 * x^3 + 700 + 4000 * max(0, x-0.5)) / 2"
+    },
+    "customEndpointingRules": [
+      {
+        "type": "assistant",
+        "regex": "(spell|define|explain|example)",
+        "timeoutSeconds": 4.0
+      }
+    ]
+  },
+  "stopSpeakingPlan": {
+    "numWords": 1,
+    "backoffSeconds": 1.5
+  }
+}
+```
+
+**Optimized for:** Learning pace with extra time for complex questions and explanations.
+
+## Next steps
+
+Now that you understand voice pipeline configuration:
+
+* **[Speech configuration](speech-configuration):** Learn about provider-specific voice settings
+* **[Custom transcriber](custom-transcriber):** Configure transcription providers for your language
+* **[Voice fallback plan](../voice-fallback-plan):** Set up backup voice options
+* **[Debugging voice agents](../debugging):** Troubleshoot voice pipeline issues
+
+
+# Voice Fallback Plan
+
+> Configure fallback voices that activate automatically if your primary voice fails.
+
+
+  Voice fallback plans can currently only be configured through the API. We are working on making this available through our dashboard.
+
+
+## Introduction
+
+Voice fallback plans give you the ability to continue your call in the event that your primary voice fails. Your assistant will sequentially fallback to only the voices you configure within your plan, in the exact order you specify.
+
+
+  Without a fallback plan configured, your call will end with an error in the event that your chosen voice provider fails.
+
+
+## How It Works
+
+When a voice failure occurs, Vapi will:
+
+1. Detect the failure of the primary voice
+2. If a custom fallback plan exists:
+
+* Switch to the first fallback voice in your plan
+* Continue through your specified list if subsequent failures occur
+* Terminate only if all voices in your plan have failed
+
+## Configuration
+
+Add the `fallbackPlan` property to your assistant's voice configuration, and specify the fallback voices within the `voices` property.
+
+* Please note that fallback voices must be valid JSON configurations, and not strings.
+* The order matters. Vapi will choose fallback voices starting from the beginning of the list.
+
+```json
+{
+  "voice": {
+    "provider": "openai",
+    "voiceId": "shimmer",
+    "fallbackPlan": {
+        "voices": [
+            {
+                "provider": "cartesia",
+                "voiceId": "248be419-c632-4f23-adf1-5324ed7dbf1d"
+            },
+            {
+                "provider": "playht",
+                "voiceId": "jennifer"
+            }
+        ]
+    }
+  }
+}
+```
+
+## Best practices
+
+* Use different providers for your fallback voices to protect against provider-wide outages.
+* Select voices with **similar characteristics** (tone, accent, gender) to maintain consistency in the user experience.
+
+## How will pricing work?
+
+There is no change to the pricing of the voices. Your call will not incur any extra fees while using fallback voices, and you will be able to see the cost for each voice in your end-of-call report.
+
+
+# OpenAI Realtime
+
+> You can use OpenAI's newest speech-to-speech model with your Vapi assistants.
+
+
+  The Realtime API is currently in beta, and not recommended for production use by OpenAI. We're excited to have you try this new feature and welcome your [feedback](https://discord.com/invite/pUFNcf2WmH) as we continue to refine and improve the experience.
+
+
+OpenAI’s Realtime API enables developers to use a native speech-to-speech model. Unlike other Vapi configurations which orchestrate a transcriber, model and voice API to simulate speech-to-speech, OpenAI’s Realtime API natively processes audio in and audio out.
+
+To start using it with your Vapi assistants, select `gpt-4o-realtime-preview-2024-12-17` as your model.
+
+* Please note that only OpenAI voices may be selected while using this model. The voice selection will not act as a TTS (text-to-speech) model, but rather as the voice used within the speech-to-speech model.
+* Also note that we don’t currently support Knowledge Bases with the Realtime API.
+* Lastly, note that our Realtime integration still retains the rest of Vapi's orchestration layer such as Endpointing and Interruption models to enable a reliable conversational flow.
+
+
+# Provider Keys
+
+> Bring your own API keys to Vapi.
+
+Have a custom model or voice with one of the providers? Or an enterprise account with volume pricing?
+
+No problem! You can bring your own API keys to Vapi. You can add them in the [Dashboard](https://dashboard.vapi.ai) under the **Provider Keys** tab. Once your API key is validated, you won't be charged when using that provider through Vapi. Instead, you'll be charged directly by the provider.
+
+## Transcription Providers
+
+Currently, the only available transcription provider is `deepgram`. To use a custom model, you can specify the deepgram model ID in the `transcriber.model` parameter of the [Assistant](/api-reference/assistants/create-assistant).
+
+## Model Providers
+
+We are currently have support for any OpenAI-compatible endpoint. This includes services like [OpenRouter](https://openrouter.ai/), [AnyScale](https://www.anyscale.com/), [Together AI](https://www.together.ai/), or your own server.
+
+To use one of these providers, you can specify the `provider` and `model` in the `model` parameter of the [Assistant](/api-reference/assistants/create-assistant).
+
+You can find more details in the [Custom LLMs](/customization/custom-llm/fine-tuned-openai-models) section of the documentation.
+
+## Voice Providers
+
+All voice providers are supported. Once you've validated your API through the [Dashboard](https://dashboard.vapi.ai), any voice ID from your provider can be used in the `voice.voiceId` field of the [Assistant](/api-reference/assistants/create-assistant).
+
+## Cloud Providers
+
+Vapi stores recordings of conversations with assistants in the cloud.  By default, Vapi stores these recordings in its
+own bucket in Cloudflare R2.  You can configure Vapi to store recordings in your own bucket in AWS S3, GCP, or
+Cloudflare R2.
+
+You can find more details on how to configure your Cloud Provider keys here:
+
+* [AWS S3](/providers/cloud/s3)
+* [GCP Cloud Storage](/providers/cloud/gcp)
+* [Cloudflare R2](/providers/cloud/cloudflare)
+
+
+# Custom transcriber
+
+> Integrate your own transcription service with Vapi
+
+## Overview
+
+A custom transcriber lets you use your own transcription service with Vapi, instead of a built-in provider. This is useful if you need more control, want to use a specific provider like Deepgram, or have custom processing needs.
+
+This guide shows you how to set up Deepgram as your custom transcriber. The same approach can be adapted for other providers.
+
+You'll learn how to:
+
+* Stream audio from Vapi to your server
+* Forward audio to Deepgram for transcription
+* Return real-time transcripts back to Vapi
+
+## Why Use a Custom Transcriber?
+
+* **Flexibility:** Integrate with your preferred transcription service.
+* **Control:** Implement specialized processing that isn't available with built‑in providers.
+* **Cost Efficiency:** Leverage your existing transcription infrastructure while maintaining full control over the pipeline.
+* **Customization:** Tailor the handling of audio data, transcript formatting, and buffering according to your specific needs.
+
+## How it works
+
+
+  
+    Vapi connects to your custom transcriber endpoint (e.g. `/api/custom-transcriber`) via WebSocket. It sends an initial JSON message like this:
+
+    ```json
+    {
+      "type": "start",
+      "encoding": "linear16",
+      "container": "raw",
+      "sampleRate": 16000,
+      "channels": 2
+    }
+    ```
+  
+
+  
+    Vapi then streams binary PCM audio to your server.
+  
+
+  
+    Your server forwards the audio to Deepgram (or your chosen transcriber) using its SDK. Deepgram processes the audio and returns transcript events that include a `channel_index` (e.g. `[0, ...]` for customer, `[1, ...]` for assistant). The service buffers the incoming data, processes the transcript events (with debouncing and channel detection), and emits a final transcript.
+  
+
+  
+    The final transcript is sent back to Vapi as a JSON message:
+
+    ```json
+    {
+      "type": "transcriber-response",
+      "transcription": "The transcribed text",
+      "channel": "customer" // or "assistant"
+    }
+    ```
+  
+
+
+## Implementation steps
+
+
+  
+    Create a new Node.js project and install the required dependencies:
+
+    ```bash
+    mkdir vapi-custom-transcriber
+    cd vapi-custom-transcriber
+    npm init -y
+    ```
+
+    
+      ```bash title="npm"
+      npm install ws express dotenv @deepgram/sdk
+      ```
+
+      ```bash title="yarn"
+      yarn add ws express dotenv @deepgram/sdk
+      ```
+
+      ```bash title="pnpm"
+      pnpm add ws express dotenv @deepgram/sdk
+      ```
+
+      ```bash title="bun"
+      bun add ws express dotenv @deepgram/sdk
+      ```
+    
+
+    Create a `.env` file with the following content:
+
+    ```env
+    DEEPGRAM_API_KEY=your_deepgram_api_key
+    PORT=3001
+    ```
+  
+
+  
+    Add the following files to your project:
+
+    **transcriptionService.js**
+
+    ```js
+    const { createClient, LiveTranscriptionEvents } = require("@deepgram/sdk");
+    const EventEmitter = require("events");
+
+    const PUNCTUATION_TERMINATORS = [".", "!", "?"];
+    const MAX_RETRY_ATTEMPTS = 3;
+    const DEBOUNCE_DELAY_IN_SECS = 3;
+    const DEBOUNCE_DELAY = DEBOUNCE_DELAY_IN_SECS * 1000;
+    const DEEPGRAM_API_KEY = process.env["DEEPGRAM_API_KEY"] || "";
+
+    class TranscriptionService extends EventEmitter {
+      constructor(config, logger) {
+        super();
+        this.config = config;
+        this.logger = logger;
+        this.flowLogger = require("./fileLogger").createNamedLogger(
+          "transcriber-flow.log"
+        );
+        if (!DEEPGRAM_API_KEY) {
+          throw new Error("Missing Deepgram API Key");
+        }
+        this.deepgramClient = createClient(DEEPGRAM_API_KEY);
+        this.logger.logDetailed(
+          "INFO",
+          "Initializing Deepgram live connection",
+          "TranscriptionService",
+          {
+            model: "nova-2",
+            sample_rate: 16000,
+            channels: 2,
+          }
+        );
+        this.deepgramLive = this.deepgramClient.listen.live({
+          encoding: "linear16",
+          channels: 2,
+          sample_rate: 16000,
+          model: "nova-2",
+          smart_format: true,
+          interim_results: true,
+          endpointing: 800,
+          language: "en",
+          multichannel: true,
+        });
+        this.finalResult = { customer: "", assistant: "" };
+        this.audioBuffer = [];
+        this.retryAttempts = 0;
+        this.lastTranscriptionTime = Date.now();
+        this.pcmBuffer = Buffer.alloc(0);
+
+        this.deepgramLive.addListener(LiveTranscriptionEvents.Open, () => {
+          this.logger.logDetailed(
+            "INFO",
+            "Deepgram connection opened",
+            "TranscriptionService"
+          );
+          this.deepgramLive.on(LiveTranscriptionEvents.Close, () => {
+            this.logger.logDetailed(
+              "INFO",
+              "Deepgram connection closed",
+              "TranscriptionService"
+            );
+            this.emitTranscription();
+            this.audioBuffer = [];
+          });
+          this.deepgramLive.on(LiveTranscriptionEvents.Metadata, (data) => {
+            this.logger.logDetailed(
+              "DEBUG",
+              "Deepgram metadata received",
+              "TranscriptionService",
+              data
+            );
+          });
+          this.deepgramLive.on(LiveTranscriptionEvents.Transcript, (event) => {
+            this.handleTranscript(event);
+          });
+          this.deepgramLive.on(LiveTranscriptionEvents.Error, (err) => {
+            this.logger.logDetailed(
+              "ERROR",
+              "Deepgram error received",
+              "TranscriptionService",
+              { error: err }
+            );
+            this.emit("transcriptionerror", err);
+          });
+        });
+      }
+
+      send(payload) {
+        if (payload instanceof Buffer) {
+          this.pcmBuffer =
+            this.pcmBuffer.length === 0
+              ? payload
+              : Buffer.concat([this.pcmBuffer, payload]);
+        } else {
+          this.logger.warn("TranscriptionService: Received non-Buffer data chunk.");
+        }
+        if (this.deepgramLive.getReadyState() === 1 && this.pcmBuffer.length > 0) {
+          this.sendBufferedData(this.pcmBuffer);
+          this.pcmBuffer = Buffer.alloc(0);
+        }
+      }
+
+      sendBufferedData(bufferedData) {
+        try {
+          this.logger.logDetailed(
+            "INFO",
+            "Sending buffered data to Deepgram",
+            "TranscriptionService",
+            { bytes: bufferedData.length }
+          );
+          this.deepgramLive.send(bufferedData);
+          this.audioBuffer = [];
+          this.retryAttempts = 0;
+        } catch (error) {
+          this.logger.logDetailed(
+            "ERROR",
+            "Error sending buffered data",
+            "TranscriptionService",
+            { error }
+          );
+          this.retryAttempts++;
+          if (this.retryAttempts <= MAX_RETRY_ATTEMPTS) {
+            setTimeout(() => {
+              this.sendBufferedData(bufferedData);
+            }, 1000);
+          } else {
+            this.logger.logDetailed(
+              "ERROR",
+              "Max retry attempts reached, discarding data",
+              "TranscriptionService"
+            );
+            this.audioBuffer = [];
+            this.retryAttempts = 0;
+          }
+        }
+      }
+
+      handleTranscript(transcription) {
+        if (!transcription.channel || !transcription.channel.alternatives?.[0]) {
+          this.logger.logDetailed(
+            "WARN",
+            "Invalid transcript format",
+            "TranscriptionService",
+            { transcription }
+          );
+          return;
+        }
+        const text = transcription.channel.alternatives[0].transcript.trim();
+        if (!text) return;
+        const currentTime = Date.now();
+        const channelIndex = transcription.channel_index
+          ? transcription.channel_index[0]
+          : 0;
+        const channel = channelIndex === 0 ? "customer" : "assistant";
+        this.logger.logDetailed(
+          "INFO",
+          "Received transcript",
+          "TranscriptionService",
+          { channel, text }
+        );
+        if (transcription.is_final || transcription.speech_final) {
+          this.finalResult[channel] += ` ${text}`;
+          this.emitTranscription();
+        } else {
+          this.finalResult[channel] += ` ${text}`;
+          if (currentTime - this.lastTranscriptionTime >= DEBOUNCE_DELAY) {
+            this.logger.logDetailed(
+              "INFO",
+              `Emitting transcript after ${DEBOUNCE_DELAY_IN_SECS}s inactivity`,
+              "TranscriptionService"
+            );
+            this.emitTranscription();
+          }
+        }
+        this.lastTranscriptionTime = currentTime;
+      }
+
+      emitTranscription() {
+        for (const chan of ["customer", "assistant"]) {
+          if (this.finalResult[chan].trim()) {
+            const transcript = this.finalResult[chan].trim();
+            this.logger.logDetailed(
+              "INFO",
+              "Emitting transcription",
+              "TranscriptionService",
+              { channel: chan, transcript }
+            );
+            this.emit("transcription", transcript, chan);
+            this.finalResult[chan] = "";
+          }
+        }
+      }
+    }
+
+    module.exports = TranscriptionService;
+    ```
+
+    **server.js**
+
+    ```js
+    const express = require("express");
+    const http = require("http");
+    const TranscriptionService = require("./transcriptionService");
+    const FileLogger = require("./fileLogger");
+    require("dotenv").config();
+
+    const app = express();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    app.get("/", (req, res) => {
+      res.send("Custom Transcriber Service is running");
+    });
+
+    const server = http.createServer(app);
+
+    const config = {
+      DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
+      PORT: process.env.PORT || 3001,
+    };
+
+    const logger = new FileLogger();
+    const transcriptionService = new TranscriptionService(config, logger);
+
+    transcriptionService.setupWebSocketServer = function (server) {
+      const WebSocketServer = require("ws").Server;
+      const wss = new WebSocketServer({ server, path: "/api/custom-transcriber" });
+      wss.on("connection", (ws) => {
+        logger.logDetailed(
+          "INFO",
+          "New WebSocket client connected on /api/custom-transcriber",
+          "Server"
+        );
+        ws.on("message", (data, isBinary) => {
+          if (!isBinary) {
+            try {
+              const msg = JSON.parse(data.toString());
+              if (msg.type === "start") {
+                logger.logDetailed(
+                  "INFO",
+                  "Received start message from client",
+                  "Server",
+                  { sampleRate: msg.sampleRate, channels: msg.channels }
+                );
+              }
+            } catch (err) {
+              logger.error("JSON parse error", err, "Server");
+            }
+          } else {
+            transcriptionService.send(data);
+          }
+        });
+        ws.on("close", () => {
+          logger.logDetailed("INFO", "WebSocket client disconnected", "Server");
+          if (
+            transcriptionService.deepgramLive &&
+            transcriptionService.deepgramLive.getReadyState() === 1
+          ) {
+            transcriptionService.deepgramLive.finish();
+          }
+        });
+        ws.on("error", (error) => {
+          logger.error("WebSocket error", error, "Server");
+        });
+        transcriptionService.on("transcription", (text, channel) => {
+          const response = {
+            type: "transcriber-response",
+            transcription: text,
+            channel,
+          };
+          ws.send(JSON.stringify(response));
+          logger.logDetailed("INFO", "Sent transcription to client", "Server", {
+            channel,
+            text,
+          });
+        });
+        transcriptionService.on("transcriptionerror", (err) => {
+          ws.send(
+            JSON.stringify({ type: "error", error: "Transcription service error" })
+          );
+          logger.error("Transcription service error", err, "Server");
+        });
+      });
+    };
+
+    transcriptionService.setupWebSocketServer(server);
+
+    server.listen(config.PORT, () => {
+      console.log(`Server is running on http://localhost:${config.PORT}`);
+    });
+    ```
+  
+
+  
+    1. **Deploy your server:**
+
+    ```bash
+    node server.js
+    ```
+
+    2. **Expose your server:**
+       Use a tool like ngrok to expose your server via HTTPS/WSS.
+    3. **Initiate a call with Vapi:**
+       Use the following CURL command (update the placeholders with your actual values):
+
+    ```bash
+    curl -X POST https://api.vapi.ai/call \
+         -H "Authorization: Bearer YOUR_API_KEY" \
+         -H "Content-Type: application/json" \
+         -d '{
+      "phoneNumberId": "YOUR_PHONE_NUMBER_ID",
+      "customer": {
+        "number": "CUSTOMER_PHONE_NUMBER"
+      },
+      "assistant": {
+        "transcriber": {
+          "provider": "custom-transcriber",
+          "server": {
+            "url": "wss://your-server.ngrok.io/api/custom-transcriber"
+          },
+          "secret": "your_optional_secret_value"
+        },
+        "firstMessage": "Hello! I am using a custom transcriber with Deepgram."
+      },
+      "name": "CustomTranscriberTest"
+    }'
+    ```
+
+    **Expected behavior:**
+
+    * Vapi connects via WebSocket to your custom transcriber at `/api/custom-transcriber`.
+    * The `"start"` message initializes the Deepgram session.
+    * PCM audio data is forwarded to Deepgram.
+    * Deepgram returns transcript events, which are processed with channel detection and debouncing.
+    * The final transcript is sent back as a JSON message:
+      ```json
+      {
+        "type": "transcriber-response",
+        "transcription": "The transcribed text",
+        "channel": "customer" // or "assistant"
+      }
+      ```
+  
+
+
+## Notes and limitations
+
+* **Streaming support requirement:**\
+  The custom transcriber must support streaming. Vapi sends continuous audio data over the WebSocket, and your server must handle this stream in real time.
+* **Secret header:**\
+  The custom transcriber configuration accepts an optional field called **`secret`**. When set, Vapi will send this value with every request as an HTTP header named `x-vapi-secret`. This can also be configured via a headers field.
+* **Buffering:**\
+  The solution buffers PCM audio and performs simple validation (e.g. ensuring stereo PCM data length is a multiple of 4). If the audio data is malformed, it is trimmed to a valid length.
+* **Channel detection:**\
+  Transcript events from Deepgram include a `channel_index` array. The service uses the first element to determine whether the transcript is from the customer (`0`) or the assistant (`1`). Ensure Deepgram's response format remains consistent with this logic.
+
+***
+
+## Conclusion
+
+Using a custom transcriber with Vapi gives you the flexibility to integrate any transcription service into your call flows. This guide walked you through the setup, usage, and testing of a solution that streams real-time audio, processes transcripts with multi‑channel detection, and returns formatted responses back to Vapi. Follow the steps above and use the provided code examples to build your custom transcriber solution.
+
+
+# Introduction to Tools
+
+> Extend your assistant's capabilities with powerful function calling tools.
+
+[**Tools**](/api-reference/tools/create) allow your assistant to take actions beyond just conversation. They enable your assistant to perform tasks like transferring calls, accessing external data, or triggering actions in your application. Tools can be either built-in default tools provided by Vapi or custom tools that you create.
+
+There are three types of tools available:
+
+1. **Default Tools**: Built-in functions provided by Vapi for common operations like call transfers and control.
+2. **Custom Tools**: Your own functions that can be called by the assistant to interact with your systems.
+3. **Integration Tools**: Pre-built integrations with platforms like [Make](https://www.make.com/en/integrations/vapi) and GoHighLevel (GHL) that let you trigger automated workflows via voice.
+
+
+  Tools are configured as part of your assistant's model configuration. You can find the complete API reference [here](/api-reference/tools/create-tool).
+
+
+## Available Tools
+
+
+  
+    Built-in tools for call control, transfers, and basic operations
+  
+
+  
+    Create your own tools to extend assistant capabilities
+  
+
+  
+    Import Make scenarios and GHL workflows as voice-activated tools
+  
+
+
+## Integration Tools
+
+With Make and GHL integrations, you can:
+
+* Import existing Make scenarios and GHL workflows directly into Vapi
+* Trigger automated workflows using voice commands
+* Connect your voice AI to hundreds of apps and services
+* Automate complex business processes through voice interaction
+
+Common use cases include:
+
+* Booking appointments via voice
+* Updating CRM records during calls
+* Triggering email or SMS follow-ups
+* Processing orders and payments
+* Managing customer support tickets
+
+## Key Features
+
+
+  
+    Assistants can trigger functions based on conversation context
+  
+
+  
+    Tools can run synchronously or asynchronously
+  
+
+  
+    Connect tools to your backend via webhooks
+  
+
+  
+    Built-in error handling and fallback options
+  
+
+
+## Learn More
+
+
+  
+    Learn how to import and use Make scenarios and GHL workflows as voice-activated tools
+  
+
+  
+    Get help with tool integrations from our community
+  
+
+
+
+# Default Tools
+
+> Adding Transfer Call, End Call, Dial Keypad, and API Request capabilities to your assistants.
+
+Vapi voice assistants are given additional functions: `transferCall`, `endCall`, `sms`, `dtmf` (to dial a keypad with [DTMF](https://en.wikipedia.org/wiki/DTMF)), and `apiRequest`. These functions can be used to transfer calls, hang up calls, send SMS messages, enter digits on the keypad, and integrate business logic with your existing APIs.
+
+
+  To add Default Tools to your agent, you need to add them in the `tools` array of your assistant. You can do this in your api request, or by creating a new tool in the dashboard tools page, and assigning it to your assistant.
+
+
+#### Transfer Call
+
+This function is provided when `transferCall` is included in the assistant's list of available tools (see configuration options [here](/api-reference/assistants/create#request.body.model.openai.tools.transferCall)). This function can be used to transfer the call to any of the `destinations` defined in the tool configuration  (see details on destination options [here](/api-reference/assistants/create#request.body.model.openai.tools.transferCall.destinations)).
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an assistant at a law firm. When the user asks to be transferred, use the transferCall function."
+      }
+    ],
+    "tools": [
+      {
+          "type": "transferCall",
+          "destinations" : {
+            {
+              "type": "number",
+              "number": "+16054440129"
+            }
+          }
+      }
+    ]
+  }
+}
+```
+
+#### End Call
+
+This function is provided when `endCall` is included in the assistant's list of available tools (see configuration options [here](/api-reference/assistants/create#request.body.model.openai.tools.endCall)). The assistant can use this function to end the call.
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an assistant at a law firm. If the user is being mean, use the endCall function."
+      }
+    ],
+    "tools": [
+      {
+          "type": "endCall"
+      }
+    ]
+  }
+}
+```
+
+#### Send Text
+
+This function is provided when `sms` is included in the assistant's list of available tool (see configuration options [here](/api-reference/assistants/create#request.body.model.openai.tools.sms)). The assistant can use this function to send SMS messages using a configured Twilio account.
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an assistant. When the user asks you to send a text message, use the sms function."
+      }
+    ],
+    "tools": [
+      {
+        "type": "sms",
+        "metadata": {
+          "from": "+15551234567" 
+        }
+      }
+    ]
+  }
+}
+```
+
+#### Dial Keypad (DTMF)
+
+This function is provided when `dtmf` is included in the assistant's list of available tools (see configuration options [here](/api-reference/assistants/create#request.body.model.openai.tools.dtmf)). The assistant will be able to enter digits on the keypad.
+Useful for IVR navigation or data entry.
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an assistant at a law firm. When you hit a menu, use the dtmf function to enter the digits."
+      }
+    ],
+    "tools": [
+      {
+          "type": "dtmf"
+      }
+    ]
+  }
+}
+```
+
+There are three methods for sending DTMF in a phone call:
+
+1. **In-band**: tones are transmitted as part of the regular audio stream. This is the simplest method, but it can suffer from quality issues if the audio stream is compressed or degraded.
+2. **Out-of-band via RFC 2833**: tones are transmitted separately from the audio stream, within RTP (Real-Time Protocol) packets. It's typically more reliable than in-band DTMF, particularly for VoIP applications where the audio stream might be compressed. RFC 2833 is the standard that initially defined this method. It is now replaced by RFC 4733 but this method is still referred by RFC 2833.
+3. **Out-of-band via SIP INFO messages**: tones are sent as separate SIP INFO messages. While this can be more reliable than in-band DTMF, it's not as widely supported as the RFC 2833 method.
+
+
+  Vapi's DTMF tool integrates with telephony provider APIs to send DTMF tones using the out-of-band RFC 2833 method. This approach is widely supported and more reliable for transmitting the signals, especially in VoIP environments.
+  Note, the tool's effectiveness depends on the IVR system's configuration and their capturing method. If you are running into issues, try different telephony providers or have your assistant say the options out loud if available.
+
+
+#### API Request
+
+This tool allows your assistant to make HTTP requests to any external API endpoint during conversations. This tool fills the gap between Vapi and your existing business logic, bringing your own endpoints into the conversation flow.
+See configuration options [here](/api-reference/tools/create).
+
+##### Dynamic Variables with LiquidJS
+
+Use **LiquidJS syntax** to reference conversation variables and user data in your URLs, headers, and request bodies. This allows your API requests to adapt dynamically based on the conversation context.
+
+##### Basic Examples
+
+**GET Request Example**
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You help users check their order status. When they provide an order number, use the checkOrderStatus function."
+      }
+    ],
+    "tools": [
+      {
+        "type": "apiRequest",
+        "function": {
+          "name": "api_request_tool"
+        },
+        "name": "checkOrderStatus",
+        "url": "https://api.yourcompany.com/orders/{{orderNumber}}",
+        "method": "GET",
+        "body": {
+          "type": "object",
+          "properties": {
+            "orderNumber": {
+              "description": "The user's order number",
+              "type": "string"
+            }
+          },
+          "required": ["orderNumber"]
+        }
+      }
+    ]
+  }
+}
+```
+
+**POST Request Example**
+
+```json
+{
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You help users book appointments. When they want to schedule, use the bookAppointment function."
+      }
+    ],
+    "tools": [
+      {
+        "type": "apiRequest",
+        "function": {
+          "name": "api_request_tool"
+        },
+        "name": "bookAppointment",
+        "url": "https://api.yourcompany.com/appointments",
+        "method": "POST",
+        "headers": {
+          "type": "object",
+          "properties": {
+            "x-api-key": {
+              "type": "string",
+              "value": "123456789"
+            }
+          }
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "description": "The date of the appointment",
+              "type": "string"
+            },
+            "customerName": {
+              "description": "The name of the customer",
+              "type": "string"
+            },
+            "customerPhoneNumber": {
+              "description": "The phone number of the customer",
+              "type": "string"
+            }
+          },
+          "required": [
+            "date",
+            "customerName",
+            "customerPhoneNumber"
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+##### Advanced Configuration
+
+**With Retry Logic**
+
+```json
+{
+  "type": "apiRequest",
+  "function": {
+    "name": "api_request_tool"
+  },
+  "name": "checkOrderStatus",
+  "url": "https://api.yourcompany.com/orders/{{orderNumber}}",
+  "method": "GET",
+  "body": {
+    "type": "object",
+    "properties": {
+      "orderNumber": {
+        "description": "The user's order number",
+        "type": "string"
+      }
+    },
+    "required": [
+      "orderNumber"
+    ]
+  },
+  "backoffPlan": {
+    "type": "exponential",
+    "maxRetries": 3,
+    "baseDelaySeconds": 1
+  },
+  "timeoutSeconds": 45
+}
+```
+
+
+  ### Custom Functions
+
+  
+    The 
+
+    **Custom Functions**
+
+     feature is being deprecated in favor of 
+
+    [Tools](/tools-calling)
+
+    . Please refer to the 
+
+    **Tools**
+
+     section instead. We're working on a solution to migrate your existing functions over to make this a seamless transtion.
+  
+
+  In addition to the predefined functions, you can also define custom functions. These functions are similar to OpenAI functions and your chosen LLM will trigger them as needed based on your instructions.
+
+  The functions array in the assistant definition allows you to define custom functions that the assistant can call during a conversation. Each function is an object with the following properties:
+
+  * `name`: The name of the function. It must be a string containing a-z, A-Z, 0-9, underscores, or dashes, with a maximum length of 64.
+  * `description`: A brief description of what the function does. This is used by the AI to decide when and how to call the function.
+  * `parameters`: An object that describes the parameters the function accepts. The type property should be "object", and the properties property should be an object where each key is a parameter name and each value is an object describing the type and purpose of the parameter.
+
+  Here's an example of a function definition:
+
+  ```json
+  {
+    "functions": [
+      {
+        "name": "bookAppointment",
+        "description": "Used to book the appointment.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "datetime": {
+              "type": "string",
+              "description": "The date and time of the appointment in ISO format."
+            }
+          }
+        }
+      }
+    ]
+  }
+  ```
+
+  In this example, the bookAppointment function accepts one parameter, `datetime`, which is a string representing the date and time of the appointment in ISO format.
+
+  In addition to defining custom functions, you can specify a `serverUrl` where Vapi will send the function call information. This URL can be configured at the account level or at the assistant level.
+  At the account level, the `serverUrl` is set in the Vapi Dashboard. All assistants under the account will use this URL by default for function calls.
+  At the assistant level, the `serverUrl` can be specified in the assistant configuration when creating or updating an assistant. This allows different assistants to use different URLs for function calls. If a `serverUrl` is specified at the assistant level, it will override the account-level Server URL.
+
+  If the `serverUrl` is not defined either at the account level or the assistant level, the function call will simply be added to the chat history. This can be particularly useful when you want a function call to trigger an action on the frontend.
+
+  For instance, the frontend can listen for specific function calls in the chat history and respond by updating the user interface or performing other actions. This allows for a dynamic and interactive user experience, where the frontend can react to changes in the conversation in real time.
+
+
+
+# Custom Tools
+
+> Learn how to create and configure Custom Tools for use by your Vapi assistants.
+
+This guide shows you how to create custom tools for your Vapi assistants. We recommend using the Vapi dashboard's dedicated Tools section, which provides a visual interface for creating and managing tools that can be reused across multiple assistants. For advanced users, API configuration is also available.
+
+## Creating Tools in the Dashboard (Recommended)
+
+### Step 1: Navigate to the Tools Section
+
+1. Open your [Vapi Dashboard](https://dashboard.vapi.ai)
+2. Click **Tools** in the left sidebar
+3. Click **Create Tool** to start building your custom tool
+
+### Step 2: Configure Your Tool
+
+The dashboard provides a user-friendly interface to configure your tool:
+
+1. **Tool Type**: Select "Function" for custom API integrations
+2. **Tool Name**: Give your tool a descriptive name (e.g., "Weather Lookup")
+3. **Description**: Explain what your tool does
+4. **Tool Configuration**:
+   * **Tool Name**: The identifier for your function (e.g., `get_weather`)
+   * **Parameters**: Define the input parameters your function expects
+   * **Server URL**: The endpoint where your function is hosted
+
+### Step 3: Configure Messages
+
+Set up the messages your assistant will speak during tool execution. For example, if you want custom messages you can add something like this:
+
+* **Request Start**: "Checking the weather forecast. Please wait..."
+* **Request Complete**: "The weather information has been retrieved."
+* **Request Failed**: "I couldn't get the weather information right now."
+* **Request Delayed**: "There's a slight delay with the weather service."
+
+### Step 4: Advanced Settings
+
+Configure additional options:
+
+* **Async Mode**: Enable if the tool should run asynchronously
+* **Timeout Settings**: Set how long to wait for responses
+* **Error Handling**: Define fallback behaviors
+
+## Example: Creating a Weather Tool
+
+Let's walk through creating a weather lookup tool:
+
+### Dashboard Configuration
+
+1. **Tool Name**: "Weather Lookup"
+2. **Description**: "Retrieves current weather information for any location"
+3. **Function Name**: `get_weather`
+4. **Parameters**:
+   * `location` (string, required): "The city or location to get weather for"
+5. **Server URL**: `https://api.openweathermap.org/data/2.5/weather`
+
+
+  This example uses OpenWeatherMap's free API. You'll need to sign up at [openweathermap.org](https://openweathermap.org/api) to get a free API key and add it as a query parameter: `?appid=YOUR_API_KEY&q={location}`
+
+
+### Messages Configuration
+
+* **Request Start**: "Let me check the current weather for you..."
+* **Request Complete**: "Here's the weather information you requested."
+* **Request Failed**: "I'm having trouble accessing weather data right now."
+
+## Using Tools in Assistants
+
+Once created, your tools can be easily added to any assistant:
+
+### In the Dashboard
+
+1. Go to **Assistants** → Select your assistant
+2. Navigate to the **Tools** tab
+3. Click **Add Tool** and select your custom tool from the dropdown
+4. Save your assistant configuration
+
+### In Workflows
+
+Tools created in the Tools section are automatically available in the workflow builder:
+
+1. Add a **Tool Node** to your workflow
+2. Select your custom tool from the **Tool** dropdown
+3. Configure any node-specific settings
+
+## Alternative: API Configuration
+
+For advanced users who prefer programmatic control, you can also create and manage tools via the Vapi API:
+
+### Creating Tools via API
+
+```bash
+curl --location 'https://api.vapi.ai/tool' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer ' \
+--data '{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Retrieves current weather information for any location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city or location to get weather for"
+                }
+            },
+            "required": ["location"]
+        }
+    },
+    "server": {
+        "url": "https://api.openweathermap.org/data/2.5/weather"
+    }
+}'
+```
+
+### Adding Tools to Assistants via API
+
+```bash
+curl --location --request PATCH 'https://api.vapi.ai/assistant/ASSISTANT_ID' \
+--header 'Authorization: Bearer ' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": {
+        "provider": "openai",
+        "model": "gpt-4o",
+        "toolIds": ["your-tool-id-here"]
+    }
+}'
+```
+
+## Request Format: Understanding the Tool Call Request
+
+When your server receives a tool call request from Vapi, it will be in the following format:
+
+```json
+{
+    "message": {
+        "timestamp": 1678901234567,
+        "type": "tool-calls",
+        "toolCallList": [
+            {
+                "id": "toolu_01DTPAzUm5Gk3zxrpJ969oMF",
+                "name": "get_weather",
+                "arguments": {
+                    "location": "San Francisco"
+                }
+            }
+        ],
+        "toolWithToolCallList": [
+            {
+                "type": "function",
+                "name": "get_weather",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "description": "Retrieves the current weather for a specified location"
+            },
+            "server": {
+                "url": "https://api.openweathermap.org/data/2.5/weather"
+            },
+            "messages": [],
+            "toolCall": {
+                "id": "toolu_01DTPAzUm5Gk3zxrpJ969oMF",
+                "type": "function",
+                "function": {
+                    "name": "get_weather",
+                    "parameters": {
+                        "location": "San Francisco"
+                    }
+                }
+            }
+        ],
+        "artifact": {
+            "messages": []
+        },
+        "assistant": {
+            "name": "Weather Assistant",
+            "description": "An assistant that provides weather information",
+            "model":{},
+            "voice":{},
+            "artifactPlans":{},
+            "startSpeakingPlan":{}
+        },
+        "call": {
+            "id": "call-uuid",
+            "orgId": "org-uuid",
+            "type": "webCall",
+            "assistant": {}
+        }
+    }
+}
+```
+
+
+  For the complete API reference, see [ServerMessageToolCalls Type Definition](https://github.com/VapiAI/server-sdk-typescript/blob/main/src/api/types/ServerMessageToolCalls.ts#L7).
+
+
+## Server Response Format: Providing Results and Context
+
+When your Vapi assistant calls a tool (via the server URL you configured), your server will receive an HTTP request containing information about the tool call. Upon processing the request and executing the desired function, your server needs to send back a response in the following JSON format:
+
+```json
+{
+    "results": [
+        {
+            "toolCallId": "X",
+            "result": "Y"
+        }
+    ]
+}
+```
+
+**Breaking down the components:**
+
+* **toolCallId (X):** This is a unique identifier included in the initial request from Vapi. It allows the assistant to match the response with the corresponding tool call, ensuring accurate processing and context preservation.
+* **result (Y):** This field holds the actual output or result of your tool's execution. The format and content of "result" will vary depending on the specific function of your tool. It could be a string, a number, an object, an array, or any other data structure that is relevant to the tool's purpose.
+
+**Example:**
+
+Let's revisit the weather tool example from before. If the tool successfully retrieves the weather for a given location, the server response might look like this:
+
+```json
+{
+  "results": [
+    {
+      "toolCallId": "call_VaJOd8ZeZgWCEHDYomyCPfwN",
+      "result": "San Francisco's weather today is 62°C, partly cloudy."
+    }
+  ]
+}
+```
+
+**Some Key Points:**
+
+* Pay attention to the required parameters and response format of your functions.
+* Ensure your server is accessible and can handle the incoming requests from Vapi.
+* Make sure to add "Tools Calls" in both the Server and Client messages and remove the function calling from it.
+
+By following these guidelines and adapting the sample payload, you can easily configure a variety of tools to expand your Vapi assistant's capabilities and provide a richer, more interactive user experience.
+
+**Video Tutorial:**
+
+
+
+Icon
+Hyper Icon
