@@ -1,4 +1,5 @@
 import { Anthropic } from "@anthropic-ai/sdk";
+import { bedrockClient } from "./client";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -102,6 +103,85 @@ Only return the JSON, no explanations.`,
     }
   } catch (error) {
     console.error(`[CALL-PARSER] API error:`, error);
+    
+    // Fallback parsing using regex
+    return fallbackParseCallQuery(input);
+  }
+}
+
+// New function using Bedrock client
+export async function parseCallQueryWithBedrock(input: string): Promise<ParsedCallQuery> {
+  console.log(`[BEDROCK-CALL-PARSER] Parsing call query: ${input}`);
+  
+  try {
+    const systemPrompt = `You are an expert at parsing natural language queries for making phone calls. 
+You should:
+1. Extract the names of people to call
+2. Extract the message to deliver
+3. Handle various phrasings like:
+   - "call X and Y and say..."
+   - "call X and tell them..."
+   - "make a call to X and say..."
+   - "make a phone call to X and tell them..."
+   - "phone X and say..."
+   - "dial X and tell them..."
+
+Respond with JSON with this structure:
+{ 
+  "type": "call",
+  "contacts": ["name1", "name2"],
+  "message": "message to deliver",
+  "error": null | "error message if input can't be processed"
+}
+
+Examples:
+
+Input: "call Manish and Aadidev and say we have job vacancy available for you now"
+Output: {
+  "type": "call",
+  "contacts": ["Manish", "Aadidev"],
+  "message": "we have job vacancy available for you now",
+  "error": null
+}
+
+Input: "make a phone call to Aadidev and say we have job vacancy available for you"
+Output: {
+  "type": "call",
+  "contacts": ["Aadidev"],
+  "message": "we have job vacancy available for you",
+  "error": null
+}
+
+Handle various separators: "and", ",", "," + "and"
+Handle various message starters: "say", "tell them", "tell him", "tell her", "inform them"
+
+IMPORTANT: Always interpret queries that start with "make a call", "make a phone call", "phone", or "dial" as call requests.
+
+If the input is not a call request or cannot be parsed, set error field.
+
+Only return the JSON, no explanations.`;
+
+    const response = await bedrockClient.generateCompletion(input, {
+      system_prompt: systemPrompt,
+      max_tokens: 1000,
+      temperature: 0.2,
+    });
+
+    try {
+      console.log(`[BEDROCK-CALL-PARSER] Raw response: ${response}`);
+      const parsedResponse = JSON.parse(response);
+      console.log(`[BEDROCK-CALL-PARSER] Parsed result:`, parsedResponse);
+      
+      return parsedResponse;
+    } catch (parseError) {
+      console.error(`[BEDROCK-CALL-PARSER] Error parsing response:`, parseError);
+      console.error(`[BEDROCK-CALL-PARSER] Raw response was:`, response);
+      
+      // Fallback parsing using regex
+      return fallbackParseCallQuery(input);
+    }
+  } catch (error) {
+    console.error(`[BEDROCK-CALL-PARSER] API error:`, error);
     
     // Fallback parsing using regex
     return fallbackParseCallQuery(input);

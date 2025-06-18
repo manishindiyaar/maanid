@@ -1,4 +1,4 @@
-// bedrock.js
+//For Testing Purpose (there is no dependency on this file)
 
 import {
   BedrockRuntimeClient,
