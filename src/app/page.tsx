@@ -25,7 +25,6 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      We are still building.......
       {/* <Navbar /> */}
 
       {/* Get Started Button */}

@@ -107,10 +107,10 @@ export default function TransparencyLayer() {
           className="text-center mb-12"
         >
           <h2 className="mt-20 text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 mb-4">
-            AI Transparency Layer
+            Cursor for Customer Support
           </h2>
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-lg">
-            Watch our AI process messages in real-time with intelligent context and memory
+            Watch our AI process messages in real-time with intelligent context and memory all you need to do is prompt it.
           </p>
         </motion.div>
         
