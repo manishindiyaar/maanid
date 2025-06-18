@@ -20,7 +20,6 @@ import QueryResultsOverlay from "./QueryResultsOverlay";
 import SetupAgent from "./../agent/SetupAgent";
 import CombinedMessagingPanel from "./../MsgPanel";
 import { TealSidebar } from "../sidebar/TealSidebar";
-import TelegramConnector from "../bots/TelegramConnector";
 
 const DashboardContainer = () => {
   const router = useRouter();
@@ -216,85 +215,34 @@ const DashboardContainer = () => {
         .on(
           'postgres_changes',
           {
-            event: 'UPDATE',
+            event: '*', // Listen for all events (INSERT, UPDATE, DELETE)
             schema: 'public',
             table: 'messages',
             filter: `contact_id=eq.${selectedCustomerId}`
           },
           (payload) => {
-            console.log('Message updated:', payload);
+            console.log('Message change detected:', payload);
             
-            // Update the message in the UI without creating duplicates
-            if (payload.new && payload.new.id) {
-              setMessages(prev => {
-                // Check if we already have this message - if so, just update it
-                const existingMessageIndex = prev.findIndex(msg => msg.id === payload.new.id);
-                
-                if (existingMessageIndex >= 0) {
-                  // Update existing message
-                  const updatedMessages = [...prev];
-                  updatedMessages[existingMessageIndex] = {
-                    ...updatedMessages[existingMessageIndex],
-                    isSent: payload.new.is_sent === true
-                  };
-                  return updatedMessages;
-                }
-                
-                // If message isn't found by ID, we shouldn't add it here - the INSERT handler will handle that
-                return prev;
-              });
-            }
-          }
-        )
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'messages',
-            filter: `contact_id=eq.${selectedCustomerId}`
-          },
-          (payload) => {
-            console.log('New message received:', payload);
-            
-            // Only add the message if it doesn't already exist
-            if (payload.new) {
-              setMessages(prev => {
-                // First, check if message with this exact ID already exists
-                if (prev.some(msg => msg.id === payload.new.id)) {
-                  console.log('Message with this ID already exists, updating status');
-                  // Update the status instead of adding a duplicate
-                  return prev.map(msg => 
-                    msg.id === payload.new.id 
-                      ? { ...msg, isSent: payload.new.is_sent === true }
-                      : msg
-                  );
-                }
-                
-                // Next, check if there's a similar message (same content sent recently)
-                const similarMessage = prev.find(msg => 
-                  msg.content === payload.new.content && 
-                  Math.abs(new Date(msg.timestamp).getTime() - new Date(payload.new.timestamp).getTime()) < 10000
-                );
-                
-                if (similarMessage) {
-                  console.log('Similar message exists, updating ID and status');
-                  // Update the existing message with the database ID and status
-                  return prev.map(msg => 
-                    msg.id === similarMessage.id 
-                      ? { 
-                          ...msg,
-                          id: payload.new.id, 
-                          isSent: payload.new.is_sent === true 
-                        }
-                      : msg
-                  );
-                }
-                
-                // For messages from other senders or truly new messages, add them
-                // This usually happens for incoming messages, not our own outgoing ones
-                if (payload.new.is_from_customer || payload.new.direction === 'incoming') {
-                  console.log('Adding incoming message to UI');
+            // Handle different types of events
+            if (payload.eventType === 'INSERT') {
+              console.log('New message received:', payload);
+              
+              // Only add the message if it doesn't already exist
+              if (payload.new) {
+                setMessages(prev => {
+                  // First, check if message with this exact ID already exists
+                  if (prev.some(msg => msg.id === payload.new.id)) {
+                    console.log('Message with this ID already exists, updating status');
+                    // Update the status instead of adding a duplicate
+                    return prev.map(msg => 
+                      msg.id === payload.new.id 
+                        ? { ...msg, isSent: payload.new.is_sent === true }
+                        : msg
+                    );
+                  }
+                  
+                  // Add the new message
+                  console.log('Adding new message to UI');
                   return [...prev, {
                     id: payload.new.id,
                     content: payload.new.content,
@@ -302,16 +250,40 @@ const DashboardContainer = () => {
                       hour: '2-digit',
                       minute: '2-digit'
                     }),
+                    created_at: payload.new.timestamp,
                     isAI: payload.new.is_ai_response,
                     isSent: payload.new.is_sent === true,
                     direction: payload.new.direction,
-                    is_from_customer: payload.new.is_from_customer
+                    is_from_customer: payload.new.is_from_customer,
+                    is_viewed: payload.new.is_viewed
                   }];
-                }
-                
-                console.log('Ignoring message to prevent duplication');
-                return prev;
-              });
+                });
+              }
+            } else if (payload.eventType === 'UPDATE') {
+              console.log('Message updated:', payload);
+              
+              // Update the message in the UI
+              if (payload.new && payload.new.id) {
+                setMessages(prev => {
+                  return prev.map(msg => 
+                    msg.id === payload.new.id 
+                      ? {
+                          ...msg,
+                          content: payload.new.content,
+                          isSent: payload.new.is_sent === true,
+                          is_viewed: payload.new.is_viewed
+                        }
+                      : msg
+                  );
+                });
+              }
+            } else if (payload.eventType === 'DELETE') {
+              console.log('Message deleted:', payload);
+              
+              // Remove the message from the UI
+              if (payload.old && payload.old.id) {
+                setMessages(prev => prev.filter(msg => msg.id !== payload.old.id));
+              }
             }
           }
         )
@@ -448,35 +420,21 @@ const DashboardContainer = () => {
       // Generate a unique ID for this message attempt
       const tempId = `temp-${Date.now()}`;
       
-      // Remove any existing messages with exactly the same content sent in the last 5 seconds
-      // This prevents any duplicate messages that might occur
-      setMessages(prev => {
-        const filteredMessages = prev.filter(msg => 
-          !(msg.content === content && 
-            Math.abs(new Date().getTime() - new Date(msg.timestamp).getTime()) < 5000)
-        );
-        
-        // If we filtered anything, log it
-        if (filteredMessages.length < prev.length) {
-          console.log(`Removed ${prev.length - filteredMessages.length} duplicate messages`);
-        }
-        
-        return filteredMessages;
-      });
-      
-      // Add message initially with pending (clock) status
+      // Add message to UI immediately with pending status
+      console.log('Adding message to UI with pending status:', tempId);
       const tempMessage: Message = {
         id: tempId,
         content,
         timestamp: displayTime,
+        created_at: timestamp,
         isAI: false,
         isSent: false, // Start with clock icon
         direction: 'outgoing',
-        is_from_customer: false
+        is_from_customer: false,
+        is_viewed: true
       };
       
-      // Add message to UI with clock icon
-      console.log('Adding message to UI with pending status:', tempId);
+      // Add message to UI with clock icon - do this first for immediate feedback
       setMessages(prev => [...prev, tempMessage]);
       
       // Insert message into Supabase
@@ -538,7 +496,7 @@ const DashboardContainer = () => {
             if (result.success) {
               console.log('Message sent successfully! Updating tick status');
               
-              // Update the SAME message bubble with tick icon
+              // Update the message with tick icon
               setMessages(prev => 
                 prev.map(msg => 
                   msg.id === dbMessageId
@@ -937,11 +895,6 @@ const DashboardContainer = () => {
           Admin
         </div>
       )}
-      
-      {/* Telegram Connector */}
-      <div className={`absolute top-2 ${isAdmin ? 'right-24' : 'right-4'} z-20`}>
-        <TelegramConnector className="shadow-xl" />
-      </div>
       
       {/* Sidebar */}
       {!isFullScreen && <TealSidebar />}

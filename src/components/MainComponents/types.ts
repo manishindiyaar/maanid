@@ -19,10 +19,14 @@ export interface Message {
   id: string;
   content: string;
   timestamp: string;
+  created_at?: string; // ISO timestamp string
+  rawTimestamp?: string; // Raw timestamp for sorting
+  date?: string; // For grouping by date
   isAI?: boolean;
   isSent: boolean;
   direction?: string;
   is_from_customer?: boolean;
+  is_viewed?: boolean;
 }
 
 export interface ActionData {

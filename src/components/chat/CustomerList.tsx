@@ -207,7 +207,8 @@ const CustomerList = ({
         )}
       >
         {loading ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex flex-col items-center justify-center h-full p-4 space-y-2">
+            <div className="w-8 h-8 border-2 border-t-transparent border-teal-500 rounded-full animate-spin"></div>
             <p className={cn(
               isDarkTheme ? "text-teal-300/70" : "text-teal-700/70"
             )}>Loading conversations...</p>
@@ -225,14 +226,29 @@ const CustomerList = ({
                 isDarkTheme ? "text-teal-400/60" : "text-teal-600/80"
               )} />
             </div>
-            <p className={cn(
-              "mb-1",
-              isDarkTheme ? "text-teal-300/70" : "text-teal-700/90"
-            )}>No conversations found</p>
-            <p className={cn(
-              "text-xs",
-              isDarkTheme ? "text-teal-300/50" : "text-teal-600/60"
-            )}>Try a different search term</p>
+            {searchQuery ? (
+              <>
+                <p className={cn(
+                  "mb-1",
+                  isDarkTheme ? "text-teal-300/70" : "text-teal-700/90"
+                )}>No conversations found</p>
+                <p className={cn(
+                  "text-xs",
+                  isDarkTheme ? "text-teal-300/50" : "text-teal-600/60"
+                )}>Try a different search term</p>
+              </>
+            ) : (
+              <>
+                <p className={cn(
+                  "mb-1",
+                  isDarkTheme ? "text-teal-300/70" : "text-teal-700/90"
+                )}>No conversations yet</p>
+                <p className={cn(
+                  "text-xs",
+                  isDarkTheme ? "text-teal-300/50" : "text-teal-600/60"
+                )}>Start a new chat to begin</p>
+              </>
+            )}
           </div>
         ) : (
           <div className="space-y-0.5 px-1">
@@ -248,77 +264,75 @@ const CustomerList = ({
                   selectedCustomerId === customer.id 
                     ? (isDarkTheme
                         ? "bg-gradient-to-r from-slate-800/90 to-slate-800/70 border-l-2 border-teal-500" 
-                        : "bg-gradient-to-r from-slate-700/90 to-slate-700/70 border-l-2 border-teal-500")
-                    : (isDarkTheme 
-                        ? "hover:bg-slate-800/50 hover:border-l hover:border-teal-500/40" 
-                        : "hover:bg-slate-700/50 hover:border-l hover:border-teal-500/40"),
-                  "hover:shadow-md"
+                        : "bg-gradient-to-r from-teal-100/90 to-teal-50/80 border-l-2 border-teal-500")
+                    : (isDarkTheme
+                        ? "hover:bg-slate-800/60" 
+                        : "hover:bg-teal-50/80")
                 )}
                 onClick={() => handleSelectCustomer(customer.id)}
-                data-customer-id={customer.id}
-                style={{
-                  transform: selectedCustomerId === customer.id ? 'translateX(4px)' : 'translateX(0)',
-                  boxShadow: selectedCustomerId === customer.id 
-                    ? (isDarkTheme ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.2)')
-                    : 'none'
-                }}
               >
                 <div className="flex items-center">
+                  {/* Customer avatar with gradient background */}
                   <div 
-                    className={cn(
-                      "h-11 w-11 rounded-full flex items-center justify-center mr-3 flex-shrink-0 shadow-md",
-                      isDarkTheme ? "text-gray-900" : "text-white font-medium"
-                    )}
+                    className="w-10 h-10 rounded-full flex items-center justify-center mr-3 flex-shrink-0 text-white font-medium text-sm shadow-md"
                     style={{ background: getProfileColor(customer.name) }}
                   >
                     {customer.name.charAt(0).toUpperCase()}
                   </div>
+                  
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <h3 className={cn(
-                        "truncate",
-                        hasUnreadMessages(customer) 
-                          ? (isDarkTheme ? 'font-bold text-white' : 'font-bold text-gray-900') 
-                          : (isDarkTheme ? 'font-medium text-teal-50' : 'font-medium text-gray-700')
+                        "font-medium truncate",
+                        isDarkTheme ? "text-gray-200" : "text-gray-800"
                       )}>
                         {customer.name}
                       </h3>
                       <span className={cn(
-                        "text-xs ml-2 flex-shrink-0",
-                        isDarkTheme ? "text-teal-300/70" : "text-teal-600/70"
+                        "text-xs",
+                        isDarkTheme ? "text-gray-400" : "text-gray-500"
                       )}>
                         {customer.timestamp}
                       </span>
                     </div>
-                    <div className="flex justify-between mt-1 items-center">
+                    
+                    <div className="flex justify-between items-center mt-1">
                       <p className={cn(
-                        "text-sm truncate max-w-[140px] flex items-center gap-1",
-                        hasUnreadMessages(customer) 
-                          ? (isDarkTheme ? 'text-teal-300 font-medium' : 'text-teal-700 font-medium') 
-                          : (isDarkTheme ? 'text-teal-300/60' : 'text-teal-600/70')
+                        "text-sm truncate max-w-[180px]",
+                        isDarkTheme 
+                          ? (hasUnreadMessages(customer) ? "text-teal-300" : "text-gray-400")
+                          : (hasUnreadMessages(customer) ? "text-teal-700 font-medium" : "text-gray-500")
                       )}>
-                        {!customer.messages || customer.messages.length === 0 ? (
-                          <span className="text-xs italic">No messages yet</span>
-                        ) : (
-                          <>
-                            {!hasUnreadMessages(customer) && customer.messages[customer.messages.length - 1]?.is_from_customer === false && (
-                              <CheckCheck className={cn(
-                                "h-3 w-3 mr-1 flex-shrink-0",
-                                isDarkTheme ? "text-teal-400/80" : "text-teal-600/80"
-                              )} />
-                            )}
-                            {customer.lastMessage}
-                          </>
-                        )}
+                        {customer.lastMessage || "No messages yet"}
                       </p>
+                      
+                      {/* Unread indicator */}
                       {hasUnreadMessages(customer) && (
                         <span className={cn(
-                          "text-xs font-bold px-2 py-0.5 rounded-full ml-2 flex-shrink-0 min-w-[20px] text-center",
+                          "ml-2 px-1.5 py-0.5 rounded-full text-xs font-medium",
                           isDarkTheme 
-                            ? "bg-teal-500 text-gray-900" 
+                            ? "bg-teal-500 text-black" 
                             : "bg-teal-600 text-white"
                         )}>
                           {customer.unreadCount}
+                        </span>
+                      )}
+                      
+                      {/* Message status indicator (for last outgoing message) */}
+                      {!hasUnreadMessages(customer) && customer.messages && customer.messages.length > 0 && 
+                       customer.messages[customer.messages.length - 1].is_from_customer === false && (
+                        <span className="ml-2">
+                          {customer.messages[customer.messages.length - 1].is_viewed ? (
+                            <CheckCheck className={cn(
+                              "h-4 w-4",
+                              isDarkTheme ? "text-teal-500" : "text-teal-600"
+                            )} />
+                          ) : (
+                            <Check className={cn(
+                              "h-4 w-4",
+                              isDarkTheme ? "text-gray-500" : "text-gray-400"
+                            )} />
+                          )}
                         </span>
                       )}
                     </div>

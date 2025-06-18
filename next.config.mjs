@@ -26,6 +26,11 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+
+  webpack(config) {
+    config.module.exprContextCritical = false;      // suppress that specific warning
+    return config;
+  },
 }
 
 export default nextConfig; 

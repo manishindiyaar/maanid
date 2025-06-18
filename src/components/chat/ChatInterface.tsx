@@ -105,7 +105,21 @@ const ChatInterface = ({
       );
       
       if (hasUnviewedCustomerMessage) {
+        console.log('New unviewed customer messages detected');
         setHasNewUnviewedMessage(true);
+        
+        // Force scroll to bottom for new customer messages
+        setTimeout(() => {
+          scrollToBottom(true);
+        }, 100);
+      }
+      
+      // Always scroll to bottom for new messages, but with smooth animation for our own messages
+      if (!hasUnviewedCustomerMessage && newMessages.some(msg => !msg.is_from_customer)) {
+        console.log('New outgoing messages detected');
+        setTimeout(() => {
+          scrollToBottom(false); // Smooth scroll for our own messages
+        }, 100);
       }
     }
     
@@ -117,6 +131,7 @@ const ChatInterface = ({
     if (messagesEndRef.current && scrollContainerRef.current) {
       const behavior = instant || hasNewUnviewedMessage ? "auto" : "smooth";
       
+      console.log(`Scrolling to bottom (${behavior})`);
       messagesEndRef.current.scrollIntoView({ 
         behavior, 
         block: "end" 
@@ -130,8 +145,34 @@ const ChatInterface = ({
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    setTimeout(() => scrollToBottom(), 10);
-  }, [messages, hasNewUnviewedMessage]);
+    // Use a small delay to ensure DOM has updated
+    const scrollTimeout = setTimeout(() => {
+      scrollToBottom();
+      
+      // Check if we're at the bottom already
+      if (scrollContainerRef.current) {
+        const { scrollHeight, scrollTop, clientHeight } = scrollContainerRef.current;
+        const isAtBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 10;
+        
+        // If not at bottom and we have new messages, force scroll
+        if (!isAtBottom && messages.length > previousMessagesLength) {
+          console.log('New messages detected, forcing scroll to bottom');
+          scrollToBottom(true);
+        }
+      }
+    }, 100);
+    
+    return () => clearTimeout(scrollTimeout);
+  }, [messages, hasNewUnviewedMessage, previousMessagesLength]);
+
+  // Force scroll to bottom when customer changes
+  useEffect(() => {
+    console.log('Customer changed, forcing scroll to bottom');
+    scrollToBottom(true);
+    
+    // Reset viewed message IDs when customer changes
+    setViewedMessageIds([]);
+  }, [customerId]);
 
   // Handle window resize
   useEffect(() => {
@@ -308,84 +349,95 @@ const ChatInterface = ({
                   <div key={group.date} className="pt-1">
                     {/* Date divider */}
                     <div className="flex justify-center mb-3">
-                      <div className={`text-xs px-2 py-1 rounded-full ${
+                      <div className={`text-xs px-3 py-1 rounded-full ${
                         isDarkTheme
                           ? "bg-gray-800/70 text-gray-300"
                           : "bg-gray-200/70 text-gray-800"
-                      }`}>
+                      } shadow-sm`}>
                         {group.date}
                       </div>
                     </div>
                     
-                    {group.messages.map((message) => (
-                      <motion.div
-                        key={message.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`flex ${message.is_from_customer ? "justify-start" : "justify-end"}`}
-                      >
-                        {/* Message Bubble - Built-in implementation */}
-                        {message.is_from_customer ? (
-                          <div className={`rounded-lg p-3 max-w-[75%] shadow-sm ${
-                            isDarkTheme ? "bg-gray-700 text-white rounded-tl-none" : "bg-white text-gray-800 rounded-tl-none"
-                          }`}>
-                            <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
-                            
-                            {/* No timestamps as requested */}
-                            
-                            {/* Render metadata if provided */}
-                            {renderMessageMetadata && renderMessageMetadata(message)}
-                          </div>
-                        ) : (
-                          <div className="rounded-lg p-3 max-w-[75%] rounded-tr-none relative overflow-hidden"
-                               style={{
-                                 background: isDarkTheme 
-                                   ? 'linear-gradient(135deg, rgba(20, 184, 166, 0.9), rgba(13, 148, 136, 0.9))' 
-                                   : 'linear-gradient(135deg, rgba(20, 184, 166, 0.8), rgba(13, 148, 136, 0.8))',
-                                 boxShadow: isDarkTheme 
-                                   ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2)' 
-                                   : '0 4px 8px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.4)'
-                               }}>
-                            {/* 3D gradient effect overlay */}
-                            <div className="absolute inset-0 opacity-20"
-                                 style={{
-                                   background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%)'
-                                 }}>
+                    {group.messages.map((message, idx) => {
+                      // Check if this is the first message in a sequence from the same sender
+                      const isFirstInSequence = idx === 0 || 
+                        group.messages[idx - 1].is_from_customer !== message.is_from_customer;
+                      
+                      // Check if this is the last message in a sequence from the same sender
+                      const isLastInSequence = idx === group.messages.length - 1 || 
+                        group.messages[idx + 1].is_from_customer !== message.is_from_customer;
+                      
+                      return (
+                        <motion.div
+                          key={message.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className={`flex ${message.is_from_customer ? "justify-start" : "justify-end"} mb-1`}
+                        >
+                          {/* Message Bubble - WhatsApp-like style */}
+                          {message.is_from_customer ? (
+                            <div className={`rounded-lg p-3 max-w-[75%] shadow-sm ${
+                              isDarkTheme ? "bg-gray-700 text-white" : "bg-white text-gray-800"
+                            } ${isFirstInSequence ? "rounded-tl-none" : ""}`}>
+                              <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
+                              
+                              {/* Timestamp for customer messages */}
+
+                              
+                              {/* Render metadata if provided */}
+                              {renderMessageMetadata && renderMessageMetadata(message)}
                             </div>
-                            
-                            <div className="text-sm whitespace-pre-wrap break-words text-white relative z-10">{message.content}</div>
-                            
-                            {/* Message status for outgoing messages without timestamp */}
-                            <div className="flex justify-end mt-1">
-                              <span>
-                                {!message.is_from_customer ? (
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                                    className="w-3.5 h-3.5 text-white/90">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7M5 13l4 4L19 7" />
-                                  </svg>
-                                ) : (
-                                  <div 
-                                    onClick={() => onRetryMessage?.(message.id)} 
-                                    className="cursor-pointer hover:opacity-70 transition-opacity"
-                                  >
+                          ) : (
+                            <div className={`rounded-lg p-3 max-w-[75%] relative overflow-hidden ${isFirstInSequence ? "rounded-tr-none" : ""}`}
+                                 style={{
+                                   background: isDarkTheme 
+                                     ? 'linear-gradient(135deg, rgba(20, 184, 166, 0.9), rgba(13, 148, 136, 0.9))' 
+                                     : 'linear-gradient(135deg, rgba(20, 184, 166, 0.8), rgba(13, 148, 136, 0.8))',
+                                   boxShadow: isDarkTheme 
+                                     ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2)' 
+                                     : '0 4px 8px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.4)'
+                                 }}>
+                              {/* 3D gradient effect overlay */}
+                              <div className="absolute inset-0 opacity-20"
+                                   style={{
+                                     background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%)'
+                                   }}>
+                              </div>
+                              
+                              <div className="text-sm whitespace-pre-wrap break-words text-white relative z-10">{message.content}</div>
+                              
+                              {/* Timestamp and status for outgoing messages */}
+                              <div className="flex justify-end items-center gap-1 mt-1">
+                                <span>
+                                  {message.isSent ? (
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                                       className="w-3.5 h-3.5 text-white/90">
-                                      <circle cx="12" cy="12" r="10" />
-                                      <polyline points="12 6 12 12 16 14" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                  </div>
-                                )}
-                              </span>
+                                  ) : (
+                                    <div 
+                                      onClick={() => onRetryMessage?.(message.id)} 
+                                      className="cursor-pointer hover:opacity-70 transition-opacity"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                        className="w-3.5 h-3.5 text-white/90">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <polyline points="12 6 12 12 16 14" />
+                                      </svg>
+                                    </div>
+                                  )}
+                                </span>
+                              </div>
+                              
+                              {/* Render metadata if provided */}
+                              {renderMessageMetadata && renderMessageMetadata(message)}
                             </div>
-                            
-                            {/* Render metadata if provided */}
-                            {renderMessageMetadata && renderMessageMetadata(message)}
-                          </div>
-                        )}
-                      </motion.div>
-                    ))}
+                          )}
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 ))}
               </div>
