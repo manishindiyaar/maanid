@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSupabaseClient } from './../../../../lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     // Extract contactId from URL search params

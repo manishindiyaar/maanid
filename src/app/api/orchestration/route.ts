@@ -6,6 +6,8 @@
  * 3. response: Generates a response using the selected agent
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 import { getServerSupabaseClient } from '@/lib/supabase/server';

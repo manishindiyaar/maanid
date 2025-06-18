@@ -7,6 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/supabase/types';
 import { registerBotInRegistry, registerUserBot, registerAdminBot } from '@/lib/utils/bot-registry';
 
+export const dynamic = 'force-dynamic';
+
 
 // Helper function to automatically detect the ngrok URL
 async function detectNgrokUrl() {

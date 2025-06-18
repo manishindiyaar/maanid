@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Telegraf } from 'telegraf';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 import { getSupabaseClient } from '@/lib/supabase/getSupabaseClient'; // your modular resolver
 
 

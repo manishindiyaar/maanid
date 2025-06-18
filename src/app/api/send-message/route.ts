@@ -5,6 +5,8 @@ import { cookies } from "next/headers"
 import { createClient } from '@supabase/supabase-js'
 import { decryptCredentials } from './../../../lib/utils/encryption'
 
+export const dynamic = 'force-dynamic';
+
 // Helper function to automatically detect the ngrok URL
 async function detectNgrokUrl(): Promise<string> {
   try {

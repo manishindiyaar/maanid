@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { handleTelegramWebhook } from '@/lib/utils/webhook';
 import { createAdminSupabaseClient } from '@/lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(
   request: Request,
   { params }: { params: { token: string } }

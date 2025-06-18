@@ -4,6 +4,8 @@ import { processDocumentTags } from './../../../lib/ai/utils/document-service';
 import { queryDocuments, formatDocumentContext } from './../../../lib/ai/utils/document-service';
 import type { AgentDocument } from './../../../lib/ai/utils/document-service';
 
+export const dynamic = 'force-dynamic';
+
 // Initialize Anthropic client with server-side API key
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY

@@ -5,6 +5,8 @@ import { decryptCredentials } from './../../../lib/utils/encryption';
 import { cookies } from 'next/headers';
 import { isDuplicateMessage, markMessageAsSent } from './../../../lib/message/deduplicationService';
 
+export const dynamic = 'force-dynamic';
+
 // Simple in-memory deduplication for recent operations
 const recentOperations = new Map<string, number>();
 const DEDUPE_WINDOW = 10000; // 10 seconds

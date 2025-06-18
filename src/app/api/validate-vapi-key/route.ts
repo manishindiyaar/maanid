@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { VapiClient } from '@vapi-ai/server-sdk';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const { apiKey } = await request.json();

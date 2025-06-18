@@ -3,6 +3,8 @@ import { parseNaturalLanguageQuery } from '../anthropic/client';
 import { getServerSupabaseClient } from '../../../lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { prompt } = await request.json();

@@ -4,6 +4,8 @@ import { isAdminModeServer } from '@/lib/utils/admin-mode';
 import { cookies } from 'next/headers';
 import { deleteBotFromRegistryAndUserDb } from '@/lib/utils/bot-registry';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * API endpoint to delete a bot from both user database and admin registry
  */

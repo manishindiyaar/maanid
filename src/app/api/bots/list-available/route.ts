@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase/getSupabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET endpoint to list available bots
  * 

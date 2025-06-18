@@ -5,6 +5,8 @@ import { encryptCredentials } from '@/lib/utils/encryption';
 import { isAdminModeServer } from '@/lib/utils/admin-mode';
 import { registerUserBot, registerAdminBot } from '@/lib/utils/bot-registry';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Helper function to extract user ID from the auth cookie
  */

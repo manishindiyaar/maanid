@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { toggleAutopilotStatus } from '@/lib/autopilot/state';
 
+export const dynamic = 'force-dynamic';
+
 // POST: Toggle autopilot status
 export async function POST() {
   try {

@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import { generateCompletion } from './../../../lib/ai/utils/ai-client';
 
+export const dynamic = 'force-dynamic';
+
 // POST handler for chat messages
 export async function POST(req: Request) {
   try {

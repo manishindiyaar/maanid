@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabase } from './../../../lib/supabase/client';
 
+export const dynamic = 'force-dynamic';
+
 // Import the autopilot status
 import { GET as getAutopilotStatus } from './status/route';
 

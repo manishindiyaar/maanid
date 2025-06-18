@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSupabaseClient } from './../../../lib/supabase/server';
 import { deleteMemoriesByMessageIds } from "../memory/memoryService";
 
+export const dynamic = 'force-dynamic';
+
 
 
 // Handler for DELETE requests

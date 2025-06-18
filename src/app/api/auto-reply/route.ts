@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { generateAutoReply } from './../../../lib/anthropic/client';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { message, conversation } = await request.json();

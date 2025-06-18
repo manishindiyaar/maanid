@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from './../../../lib/supabase/server';
 import { encryptCredentials } from './../../../lib/utils/encryption';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { code, codeVerifier, clientId, clientSecret, redirectUri } = await request.json();

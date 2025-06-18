@@ -3,6 +3,8 @@ import { createAdminSupabaseClient } from './../../../../lib/supabase/server';
 import { cookies } from 'next/headers';
 import { encryptCredentials } from './../../../../lib/utils/encryption';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * API endpoint to store user credentials in the admin database
  * Called after a user completes the OAuth flow with Google and Supabase

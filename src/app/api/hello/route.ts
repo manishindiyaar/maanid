@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 // GET request handler
 export async function GET(request: Request) {
   return NextResponse.json({

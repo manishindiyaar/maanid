@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAutopilotStatus, setAutopilotStatus } from '../../../../lib/autopilot/state';
 
+export const dynamic = 'force-dynamic';
+
 
 // GET: Get current autopilot status
 export async function GET() {

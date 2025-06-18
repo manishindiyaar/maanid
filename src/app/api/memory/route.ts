@@ -3,6 +3,8 @@
  * Endpoints for storing and retrieving memory information
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { Memory, processMessageMemory, retrieveMemories } from './memoryService';
 

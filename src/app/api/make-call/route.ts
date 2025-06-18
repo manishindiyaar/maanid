@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { VapiClient } from '@vapi-ai/server-sdk';
 import { parseCallQuery } from '../anthropic/call-parser';
 
+export const dynamic = 'force-dynamic';
+
 // Initialize VAPI client with better error handling
 let vapi: VapiClient | null = null;
 try {

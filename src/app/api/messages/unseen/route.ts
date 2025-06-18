@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSupabaseClient } from './../../../../lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET handler for fetching unseen messages
  * Supports query parameters:

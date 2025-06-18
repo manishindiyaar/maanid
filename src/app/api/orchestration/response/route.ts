@@ -3,6 +3,8 @@
  * This endpoint uses the selected agent to generate a response
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from './../../../../lib/supabase/client';
 import Anthropic from '@anthropic-ai/sdk';

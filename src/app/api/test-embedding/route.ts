@@ -1,6 +1,8 @@
 // import { NextRequest, NextResponse } from "next/server";
 // import generateGeminiEmbedding, { generateSimpleEmbedding } from "@/lib/ai/utils/gemini-embeddings";
 
+export const dynamic = 'force-dynamic';
+
 // export async function GET(request: NextRequest) {
 //   try {
 //     // Get the test text from query params or use a default

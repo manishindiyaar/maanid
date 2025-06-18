@@ -3,6 +3,8 @@
  * This endpoint processes multiple messages together as a conversation
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from './../../../../lib/supabase/client';
 import { getServerSupabaseClient } from './../../../../lib/supabase/server';

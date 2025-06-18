@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from './../../../../lib/supabase/client';
 import { getServerSupabaseClient } from './../../../../lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 // In-memory cache for message status
 const messageStatusCache = new Map<string, any>();
 

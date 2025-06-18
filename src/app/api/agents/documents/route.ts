@@ -7,6 +7,8 @@
 // import { existsSync } from "fs";
 // import { v4 as uuidv4 } from 'uuid';
 
+export const dynamic = 'force-dynamic';
+
 // const corsHeaders = {
 //   "Access-Control-Allow-Origin": "*",
 //   "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",

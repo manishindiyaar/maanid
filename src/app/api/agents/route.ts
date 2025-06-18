@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 // import { getServerSupabaseClient } from './../../../lib/supabase/server';
 import { getSupabaseClient } from '@/lib/supabase/getSupabaseClient';
 
+export const dynamic = 'force-dynamic';
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

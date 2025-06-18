@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServerSupabaseClient } from './../../../lib/supabase/server';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     // Create request headers for context
