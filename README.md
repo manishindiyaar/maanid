@@ -5,11 +5,8 @@
 
 Powered by AWS Bedrock and Sambanova 
 
-![AWS](/public/images/aws.png)
+![AWS](/public/images/hacy_cover.png)
 
-![AWS](/public/images/amazon_bedrock_img.png)
-
-![AWS](/public/images/SambaNova-Systems-Circle-Logo.webp)
 
 
 
@@ -31,7 +28,6 @@ Behind the seen we are using Bedrock Claude Models and it gave great result.
 ![QueryBox](/Idea/qb1_wireframe.png)
 ![QueryBox](/Idea/queryboxmechanism.png)
 
-//code snippet
 ```
   const bedrock = new BedrockClient({
     region: region,
