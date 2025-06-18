@@ -15,6 +15,7 @@ import SocialProofQuote from './../components/SocialProofQuote';
 import ExperimentalContact from './../components/ExperimentalContact';
 import FAQSection from './../components/FAQsection';
 import Link from 'next/link';
+import EpicVideoComponent from '@/components/FIREVIDEO';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -28,14 +29,14 @@ export default function LandingPage() {
       {/* <Navbar /> */}
 
       {/* Get Started Button */}
-      <div className="flex justify-center mt-8">
+      {/* <div className="flex justify-center mt-8">
         <Button 
           onClick={() => router.push('/admin')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2"
         >
           Get Started <ChevronRight className="w-5 h-5" />
         </Button>
-      </div>
+      </div> */}
 
        {/* Hero Section */}
        {/* <Hero /> */}
@@ -45,29 +46,31 @@ export default function LandingPage() {
       {/* <HeroWithScroller /> */}
 
 
- <div className='mt-10'></div>
+
 
       {/* Transparency Layer Section */}
       <TransparencyLayer />
+
+      <EpicVideoComponent />
+
 
       {/* Social Proof Quote */}
       {/* <SocialProofQuote /> */}
 
 
-      {/* <CopilotBoxDemo /> */}
+      <CopilotBoxDemo />
 
       {/* Bento Features Section */}
       {/* <FeaturesSectionDemo /> */}
 
       {/* <ExperimentalContact /> */}
 
-
       {/* <FAQSection /> */}
 
       <footer className="container mx-auto max-w-6xl px-4 py-8 border-t border-white/10 mt-12">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500">
-            © 2023 Bladex AI. All rights reserved.
+            © 2023 Maanid AI. All rights reserved.      
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-500 hover:text-white transition-colors">

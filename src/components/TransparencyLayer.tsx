@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Brain, Database, Send, CheckCircle } from 'lucide-react';
+import { MessageSquare, Brain, Database, Send, CheckCircle, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // AI Processing step data
 const steps = [
@@ -39,9 +40,11 @@ const steps = [
 ];
 
 export default function TransparencyLayer() {
+  const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
   
   useEffect(() => {
     // Initialize timeout variable
@@ -72,7 +75,7 @@ export default function TransparencyLayer() {
   }, []);
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden py-8 bg-gray-950 mt-20 pt-8">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden py-8 bg-gray-950  pt-8">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Cyberpunk Grid */}
@@ -106,6 +109,31 @@ export default function TransparencyLayer() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
+
+ {/* Neon Get Started Button */}
+ <div className="flex justify-center mt-80">
+          <div className="relative">
+            {/* Neon glow effect */}
+            <div 
+              className={`absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-400 opacity-70 blur-lg transition-all duration-300 ${isHovering ? 'scale-110 opacity-90' : 'scale-100'}`}
+            ></div>
+            
+            {/* Button with animated border */}
+            <button
+              onClick={() => router.push('/admin')}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              className="neon-button relative px-8 py-4 bg-black/50 backdrop-blur-sm text-white text-lg font-bold rounded-lg flex items-center gap-3 overflow-hidden border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(6,182,212,0.8)]"
+            >
+              <span className="relative z-10">Get Started</span>
+              <ChevronRight className={`w-5 h-5 relative z-10 transition-transform duration-300 ${isHovering ? 'translate-x-1' : ''}`} />
+              
+              {/* Moving light effect */}
+              <div className="light-bar"></div>
+            </button>
+          </div>
+        </div>
+
           <h2 className="mt-20 text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 mb-4">
             Cursor for Customer Support
           </h2>
@@ -123,7 +151,7 @@ export default function TransparencyLayer() {
               <div className="h-3 w-3 bg-amber-500 rounded-full"></div>
               <div className="h-3 w-3 bg-emerald-500 rounded-full"></div>
             </div>
-            <div className="flex-1 text-center text-sm text-gray-400 font-mono">bladex-ai-terminal ~ processing</div>
+            <div className="flex-1 text-center text-sm text-gray-400 font-mono">maanid-terminal ~ processing</div>
           </div>
           
           {/* Content */}
@@ -248,7 +276,50 @@ export default function TransparencyLayer() {
             />
           ))}
         </div>
+        
+       
       </div>
+      
+      <style jsx>{`
+        .neon-button {
+          position: relative;
+        }
+        
+        .neon-button:hover {
+          color: white;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        .light-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 10px;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+          animation: light-bar-animation 2s linear infinite;
+          z-index: 1;
+          transform: skewX(-20deg);
+          filter: blur(5px);
+        }
+        
+        @keyframes light-bar-animation {
+          0% {
+            left: -100px;
+            opacity: 0;
+          }
+          20% {
+            opacity: 0.6;
+          }
+          80% {
+            opacity: 0.6;
+          }
+          100% {
+            left: calc(100% + 100px);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </section>
   );
 }

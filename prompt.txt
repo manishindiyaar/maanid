@@ -1,0 +1,13 @@
+make a phone call Aadidev and say we have job vacancy available for you 
+
+Send message to all people who asked about delivery boy jobs in Mumbai: "Great news! Zomato is hiring delivery partners at ₹20,000/month + incentives. Share your Aadhaar and driving license to proceed."
+
+Find all candidates who mentioned "chef experience" and "willing to relocate" - inform them about our 5-star hotel chef opening in Goa paying ₹35,000/month with accommodation.
+
+
+Send reminder to everyone who expressed interest in IT jobs but haven't submitted their CV yet: "Don't miss out! Software Developer positions still open in Bangalore. Submit your resume today."
+
+
+For all marine engineer candidates with 5+ years experience, offer ₹1,50,000/month. For 2-5 years, offer ₹90,000. Send personalized salary breakdown to each.
+
+Find candidates who worked at 5-star hotels and are looking for management roles - inform them about our Hotel Manager position in Mumbai at ₹60,000/month.

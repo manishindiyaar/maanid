@@ -5,7 +5,9 @@ import { useAuth } from '../../lib/auth/AuthContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import TelegramLoginScreen from '../../components/bots/TelegramLoginScreen';
+import { AnimatePresence } from 'framer-motion';
 
 // Main login component
 export default function Login() {
@@ -35,6 +37,10 @@ function LoginContent() {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  // Show Telegram QR screen after login
+  const [showTelegramQR, setShowTelegramQR] = useState(false);
 
   // Check for error parameters from redirects
   useEffect(() => {
@@ -67,11 +73,40 @@ function LoginContent() {
       console.log('Sending magic link to:', email);
       await signIn(email);
       setIsEmailSent(true);
+      
+      // For demo purposes, let's simulate a successful login
+      // In a real app, this would happen after email verification
+      setTimeout(() => {
+        setShowTelegramQR(true);
+      }, 2000);
+      
     } catch (error: any) {
       console.error('Sign in error:', error);
       setError(`Failed to sign in: ${error.message || 'Please try again'}`);
     }
   };
+  
+  // Handle Google sign in with Telegram QR screen
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // Show Telegram QR screen after successful Google sign in
+      setShowTelegramQR(true);
+    } catch (error: any) {
+      console.error('Google sign in error:', error);
+      setError(`Failed to sign in with Google: ${error.message || 'Please try again'}`);
+    }
+  };
+  
+  // Handle skip button click in Telegram QR screen
+  const handleSkipTelegram = () => {
+    router.push('/dashboard');
+  };
+
+  // If showing Telegram QR screen, render it
+  if (showTelegramQR) {
+    return <TelegramLoginScreen onSkip={handleSkipTelegram} />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

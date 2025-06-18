@@ -144,7 +144,7 @@ const AdvancedSearchBar = ({
       description: "Call contacts with a message",
       end: "Action",
       onClick: () => {
-        setQuery("make a phone call to Manish and say ");
+        setQuery("make a phone call to Aadidev and say we have job vacancy available for you");
         setIsFocused(false);
       }
     }

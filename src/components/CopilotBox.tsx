@@ -127,7 +127,7 @@ export function CopilotBoxDemo() {
             ease: "linear",
           }}
         >
-          Bladex AI Copilot
+         Maanid AI Copilot
         </motion.h2>
         
         <motion.p 

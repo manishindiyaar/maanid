@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from './../../components/ui/button';
 import { Input } from './../../components/ui/input'
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import TelegramLoginScreen from '@/components/bots/TelegramLoginScreen';
 
 // Hardcoded admin credentials - in production these should be securely stored
 const ADMIN_EMAIL = 'admin@gmail.com';
@@ -18,6 +19,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [showTelegramQR, setShowTelegramQR] = useState(false);
 
   // Check if admin is already logged in
   useEffect(() => {
@@ -78,38 +80,14 @@ export default function AdminLoginPage() {
     try {
       // Client-side validation first
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        console.log('✅ Client-side credentials validated, sending to server...');
+        console.log('✅ Client-side credentials validated');
         
-        // Set admin session via API for secure storage in HTTP-only cookie
-        const response = await fetch('/api/admin/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password }),
-          credentials: 'include' // Important to include credentials for cookies
-        });
+        // Instead of making the API call, show the Telegram QR screen
+        setShowTelegramQR(true);
         
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Store the admin token in localStorage for client-side verification
-          if (data.adminToken) {
-            localStorage.setItem('admin_token', data.adminToken);
-          }
-          
-          toast.success('Successfully logged in as admin');
-          
-          // Use the redirect URL from the server if available
-          if (data.redirectTo) {
-            router.push(data.redirectTo);
-          } else {
-            router.push('/dashboard');
-          }
-        } else {
-          const errorData = await response.json();
-          setError(errorData.error || 'Failed to create admin session');
-        }
+        // For demo purposes, store the admin token in localStorage
+        localStorage.setItem('admin_token', 'demo-token');
+        
       } else {
         setError('Invalid credentials');
       }
@@ -120,6 +98,12 @@ export default function AdminLoginPage() {
       setIsLoading(false);
     }
   };
+  
+  // Handle skip button click in Telegram QR screen
+  const handleSkipTelegram = () => {
+    toast.success('Successfully logged in as admin');
+    router.push('/dashboard');
+  };
 
   if (isCheckingSession) {
     return (
@@ -127,6 +111,11 @@ export default function AdminLoginPage() {
         <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
+  }
+  
+  // Show Telegram QR screen if login was successful
+  if (showTelegramQR) {
+    return <TelegramLoginScreen onSkip={handleSkipTelegram} />;
   }
 
   return (
