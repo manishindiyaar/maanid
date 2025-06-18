@@ -90,7 +90,7 @@ const EpicVideoComponent = () => {
             <iframe 
               width="800" 
               height="450" 
-              src="https://www.youtube.com/embed/_G5-cUDrlB0?si=tFNNxrT6bvgyC5mj" 
+              src="https://youtu.be/8qI-4j3XLy4?si=QnmWlQdIrscwBEoi" 
               title="YouTube video player" 
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
