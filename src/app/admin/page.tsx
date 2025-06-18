@@ -139,6 +139,7 @@ export default function AdminLoginPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-2">Admin Login</h1>
           <p className="text-gray-300">Enter your admin credentials</p>
+          <p className="text-yellow-300 mt-2 text-sm">For judges: Use the credentials displayed below each field</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -151,6 +152,7 @@ export default function AdminLoginPage() {
               className="bg-white/5 border-white/10 text-white"
               required
             />
+            <p className="text-blue-400 text-xs">Email: {ADMIN_EMAIL}</p>
           </div>
           <div className="space-y-2">
             <Input
@@ -161,6 +163,7 @@ export default function AdminLoginPage() {
               className="bg-white/5 border-white/10 text-white"
               required
             />
+            <p className="text-blue-400 text-xs">Password: {ADMIN_PASSWORD}</p>
           </div>
 
           {error && (

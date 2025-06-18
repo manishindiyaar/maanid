@@ -28,6 +28,16 @@ export default function LandingPage() {
       We are still building.......
       {/* <Navbar /> */}
 
+      {/* Get Started Button */}
+      <div className="flex justify-center mt-8">
+        <Button 
+          onClick={() => router.push('/admin')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2"
+        >
+          Get Started <ChevronRight className="w-5 h-5" />
+        </Button>
+      </div>
+
        {/* Hero Section */}
        {/* <Hero /> */}
 

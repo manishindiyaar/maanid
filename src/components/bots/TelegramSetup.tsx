@@ -392,6 +392,11 @@ export default function TelegramSetup({ onBack }: TelegramSetupProps) {
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-transparent"
                   />
                   <p className="mt-1 text-xs text-gray-400">The name you gave your bot in BotFather</p>
+                  <div className="mt-2 bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
+                    <p className="text-xs text-blue-300 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> Demo bot name: <span className="font-mono bg-white/10 px-1.5 py-0.5 rounded text-white">Maanid</span>
+                    </p>
+                  </div>
                 </div>
                 
                 <div>
@@ -407,6 +412,11 @@ export default function TelegramSetup({ onBack }: TelegramSetupProps) {
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-transparent"
                   />
                   <p className="mt-1 text-xs text-gray-400">The token provided to you by BotFather</p>
+                  <div className="mt-2 bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
+                    <p className="text-xs text-blue-300 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> Demo bot token: <span className="font-mono bg-white/10 px-1.5 py-0.5 rounded text-white select-all">7411578924:AAEyuwZEse6hkH6DYmxciQhMLJoZvJtTzaw</span>
+                    </p>
+                  </div>
                 </div>
                 
                 <div>
@@ -422,6 +432,21 @@ export default function TelegramSetup({ onBack }: TelegramSetupProps) {
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-transparent"
                   />
                   <p className="mt-1 text-xs text-gray-400">Leave empty to use the username from BotFather</p>
+                  <div className="mt-2 bg-blue-500/10 p-2 rounded-lg border border-blue-500/20">
+                    <p className="text-xs text-blue-300 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> Demo bot username: <span className="font-mono bg-white/10 px-1.5 py-0.5 rounded text-white">Maanid_bot</span>
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-lg p-4">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-medium text-indigo-300 mb-1">Demo Bot Available</h3>
+                      <p className="text-sm text-gray-300">For demo purposes, we recommend using the provided bot details above to save time. You can also create your own bot through BotFather if you prefer.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
