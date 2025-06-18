@@ -36,6 +36,16 @@ export async function POST(request: Request) {
       });
     }
 
+    // Check if this is a call-related request that's already been handled
+    const isCallRequest = prompt.startsWith('[Call Request]');
+    if (isCallRequest) {
+      console.log('[QUERY] Detected call request that was already handled:', prompt);
+      return NextResponse.json({
+        type: 'call_handled',
+        message: 'Call request has been processed separately.'
+      });
+    }
+
     // Parse the natural language query
     const parsedQuery = await parseNaturalLanguageQuery(prompt);
     console.log('Parsed query:', parsedQuery);

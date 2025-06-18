@@ -1,4 +1,17 @@
+
+
+
 # we are building the cursor of customer support (AI copilot for customer support.)
+
+Powered by AWS Bedrock and Sambanova 
+
+![AWS](/public/images/aws.png)
+
+![AWS](/public/images/amazon_bedrock_img.png)
+
+![AWS](/public/images/SambaNova-Systems-Circle-Logo.webp)
+
+
 
 We’re revolutionising how businesses handle communication by replacing entire customer service departments with a single copilot box.
 
@@ -26,6 +39,8 @@ Behind the seen we are using Bedrock Claude Models and it gave great result.
     modelId: 'anthropic.claude-3-haiku-20240307-v1:0',
   });
 ```
+
+
 
 
 

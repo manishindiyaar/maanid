@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Search, Send, Bot, Plus, Zap, Eye, Moon, Sun } from "lucide-react"
+import { Search, Send, Bot, Plus, Zap, Eye, Moon, Sun, Phone } from "lucide-react"
 import useDebounce from "../../hooks/use-debounce"
 import { useTheme } from "./../theme-provider"
 import QueryInput from "./QueryInput"
@@ -16,6 +16,27 @@ interface Action {
   short?: string
   end?: string
   onClick?: () => void
+}
+
+interface CallResult {
+  contact: string;
+  phoneNumber: string;
+  callId: string | null;
+  status: 'initiated' | 'failed';
+  error?: string;
+}
+
+interface CallResponse {
+  success: boolean;
+  message: string;
+  parsedQuery: {
+    type: string;
+    contacts: string[];
+    message: string;
+  };
+  assistantId: string;
+  calls: CallResult[];
+  demo?: boolean;
 }
 
 interface AdvancedSearchBarProps {
@@ -44,6 +65,9 @@ const AdvancedSearchBar = ({
   const debouncedQuery = useDebounce(query, 200)
   const router = useRouter()
   const { theme, toggleTheme } = useTheme()
+  const [callResult, setCallResult] = useState<CallResponse | null>(null)
+  const [callError, setCallError] = useState<string | null>(null)
+  const [isCallProcessing, setIsCallProcessing] = useState(false)
 
   // Define actions with their handlers
   const getActions = (): Action[] => [
@@ -112,6 +136,17 @@ const AdvancedSearchBar = ({
         console.log("Theme toggle clicked in AdvancedSearchBar");
         toggleTheme();
       }
+    },
+    {
+      id: "7",
+      label: "Make a Call",
+      icon: <Phone className="h-4 w-4 text-green-400" />,
+      description: "Call contacts with a message",
+      end: "Action",
+      onClick: () => {
+        setQuery("make a phone call to Manish and say ");
+        setIsFocused(false);
+      }
     }
   ]
 
@@ -145,12 +180,83 @@ const AdvancedSearchBar = ({
     setQuery(e.target.value)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (query.trim() && !isProcessing) {
-      onSubmit(query)
-      setQuery("")
+    if (query.trim() && !isProcessing && !isCallProcessing) {
+      // Check if this is a call-related query
+      const callPatterns = [
+        // Original patterns
+        /call\s+(.+?)\s+and\s+say\s+(.+)/i,
+        /call\s+(.+?)\s+and\s+tell\s+(?:them|him|her)\s+(.+)/i,
+        /call\s+(.+?)\s+and\s+inform\s+(?:them|him|her)\s+(.+)/i,
+        /call\s+(.+?)\s+(?:to\s+)?say\s+(.+)/i,
+        /call\s+(.+?)\s+(?:to\s+)?tell\s+(?:them|him|her)\s+(.+)/i,
+        
+        // Additional patterns for "make a call" and similar variations
+        /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+and\s+say\s+(.+)/i,
+        /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+and\s+tell\s+(?:them|him|her)\s+(.+)/i,
+        /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+(?:to\s+)?say\s+(.+)/i,
+        /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+(?:to\s+)?tell\s+(?:them|him|her)\s+(.+)/i,
+        /phone\s+(.+?)\s+(?:and|to)\s+(?:say|tell|inform)\s+(.+)/i,
+        /dial\s+(.+?)\s+(?:and|to)\s+(?:say|tell|inform)\s+(.+)/i
+      ];
+      
+      // Log the query for debugging
+      console.log("AdvancedSearchBar - Processing query:", query);
+      
+      // Check if any pattern matches
+      let isCallQuery = false;
+      for (const pattern of callPatterns) {
+        if (pattern.test(query)) {
+          console.log("AdvancedSearchBar - Matched call pattern:", pattern);
+          isCallQuery = true;
+          break;
+        }
+      }
+      
+      if (isCallQuery) {
+        // Process as a call request
+        console.log("AdvancedSearchBar - Processing as call request");
+        setIsCallProcessing(true);
+        setCallResult(null);
+        setCallError(null);
+        
+        try {
+          const response = await fetch('/api/make-call', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+          });
+
+          const data = await response.json();
+          console.log("AdvancedSearchBar - Call API response:", data);
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to process call request');
+          }
+
+          setCallResult(data);
+          
+          // Don't send to normal query handler since we're handling it here
+          // onSubmit(`[Call Request] ${query}`);
+        } catch (err) {
+          console.error("AdvancedSearchBar - Call error:", err);
+          setCallError(err instanceof Error ? err.message : 'An error occurred with the call');
+          // Only send error to normal query handler
+          onSubmit(`[Call Error] ${query} - ${err instanceof Error ? err.message : 'An error occurred'}`);
+        } finally {
+          setIsCallProcessing(false);
+          setQuery("");
+        }
+      } else {
+        // Process as a normal query
+        console.log("AdvancedSearchBar - Processing as normal query");
+        onSubmit(query)
+        setQuery("")
+      }
       setIsFocused(false)
     }
   }
@@ -162,6 +268,66 @@ const AdvancedSearchBar = ({
     }
     setIsFocused(false)
   }
+
+  // Render call results if any
+  const renderCallResults = () => {
+    if (!callResult) return null;
+    
+    return (
+      <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg p-4 z-50 shadow-lg">
+        <div className="flex items-center gap-2 mb-3">
+          <Phone className="h-4 w-4 text-green-500" />
+          <span className="font-medium text-green-500">Call Results</span>
+          {callResult.demo && (
+            <span className="text-xs bg-yellow-800 text-yellow-200 px-2 py-0.5 rounded">Demo Mode</span>
+          )}
+        </div>
+        
+        <div className="space-y-3">
+          <div className="text-sm">
+            <span className="text-gray-400">Message:</span> 
+            <span className="text-white ml-2">"{callResult.parsedQuery.message}"</span>
+          </div>
+          
+          <div className="text-sm">
+            <span className="text-gray-400">Contacts:</span>
+            <div className="ml-2 space-y-1 mt-1">
+              {callResult.calls.map((call, idx) => (
+                <div key={idx} className="flex items-center justify-between border border-gray-700 rounded p-2">
+                  <div>
+                    <div className="text-white">{call.contact}</div>
+                    <div className="text-gray-400 text-xs">{call.phoneNumber}</div>
+                  </div>
+                  <div>
+                    {call.status === 'initiated' ? (
+                      <span className="text-xs bg-green-800 text-green-200 px-2 py-0.5 rounded">
+                        {callResult.demo ? 'Demo Call' : 'Call'} Initiated
+                      </span>
+                    ) : (
+                      <span className="text-xs bg-red-800 text-red-200 px-2 py-0.5 rounded">
+                        Failed
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="text-sm text-gray-300 mt-2">
+            {callResult.message}
+          </div>
+        </div>
+        
+        <button 
+          onClick={() => setCallResult(null)} 
+          className="mt-3 text-xs text-gray-400 hover:text-white"
+        >
+          Dismiss
+        </button>
+      </div>
+    );
+  };
 
   // Animation variants
   const container = {
@@ -234,12 +400,16 @@ const AdvancedSearchBar = ({
           <div className="w-full max-w-2xl spotlight-container p-3">
             <div className="flex items-center gap-3">
               <div className="spotlight-icon-container">
-                {isProcessing ? (
+                {isProcessing || isCallProcessing ? (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   >
-                    <Search className="h-5 w-5 text-gray-400" />
+                    {isCallProcessing ? (
+                      <Phone className="h-5 w-5 text-blue-400" />
+                    ) : (
+                      <Search className="h-5 w-5 text-gray-400" />
+                    )}
                   </motion.div>
                 ) : (
                   <Search className="h-5 w-5 text-gray-400" />
@@ -252,16 +422,16 @@ const AdvancedSearchBar = ({
                   onChange={handleInputChange}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                  placeholder="Search or type a command..."
+                  placeholder="Search, type a command, or make a call (e.g., 'Make a phone call to Manish and say hello')"
                   className="w-full p-3 rounded-lg spotlight-input focus:outline-none"
-                  disabled={isProcessing}
+                  disabled={isProcessing || isCallProcessing}
                 />
               </div>
               {query.length > 0 && (
                 <button
                   type="submit"
                   className="spotlight-icon-container hover:bg-opacity-70"
-                  disabled={!query.trim() || isProcessing}
+                  disabled={!query.trim() || isProcessing || isCallProcessing}
                 >
                   <Send className="h-5 w-5 text-gray-400" />
                 </button>
@@ -312,6 +482,25 @@ const AdvancedSearchBar = ({
             </AnimatePresence>
           </div>
         </form>
+      )}
+      
+      {/* Call Results Popup */}
+      {callResult && renderCallResults()}
+      
+      {/* Call Error Message */}
+      {callError && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-red-900/80 border border-red-700 text-white p-3 rounded-lg z-50">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Call Error:</span>
+            <span>{callError}</span>
+          </div>
+          <button 
+            onClick={() => setCallError(null)} 
+            className="mt-2 text-xs text-red-200 hover:text-white"
+          >
+            Dismiss
+          </button>
+        </div>
       )}
     </div>
   )

@@ -8,6 +8,7 @@ This system allows you to make voice calls using natural language commands power
 - **AI Voice Assistant**: Automatically creates VAPI assistants that deliver your message
 - **Multiple Contact Support**: Call multiple people with a single command
 - **Demo Mode**: Test the system without actual API keys
+- **Integrated Experience**: Call functionality is integrated directly into the main search interface
 
 ## How It Works
 
@@ -48,7 +49,7 @@ ANTHROPIC_API_KEY=your_anthropic_key
 
 ### Access the Interface
 
-Navigate to `/makecall` in your application to access the call interface.
+Call functionality is integrated directly into the main search/query interface. Simply type your call command into any search box in the application.
 
 ### Example Commands
 
@@ -63,8 +64,8 @@ Currently, contacts are hardcoded in the API:
 
 ```typescript
 const contacts = [
-  { name: "Manish", phoneNumber: "+1234567890" },
-  { name: "Aadidev", phoneNumber: "+0987654321" }
+  { name: "Manish", phoneNumber: "+919801441675" },
+  { name: "Aadidev", phoneNumber: "+919004200798" }
 ];
 ```
 
@@ -97,7 +98,7 @@ Make a call using natural language.
   "calls": [
     {
       "contact": "Manish",
-      "phoneNumber": "+1234567890",
+      "phoneNumber": "+919801441675",
       "callId": "call_id",
       "status": "initiated"
     }
@@ -120,9 +121,10 @@ src/
 │   │   └── anthropic/
 │   │       ├── client.ts         # Original parser
 │   │       └── call-parser.ts    # Enhanced call parser
-│   └── makecall/
-│       └── page.tsx              # Frontend interface
 └── components/
+    ├── chat/
+    │   ├── AdvancedSearchBar.tsx # Includes call functionality
+    │   └── QueryInput.tsx        # Includes call functionality
     └── ui/                       # UI components
 ```
 

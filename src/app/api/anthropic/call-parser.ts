@@ -22,7 +22,13 @@ export async function parseCallQuery(input: string): Promise<ParsedCallQuery> {
 You should:
 1. Extract the names of people to call
 2. Extract the message to deliver
-3. Handle various phrasings like "call X and Y and say...", "call X and tell them...", etc.
+3. Handle various phrasings like:
+   - "call X and Y and say..."
+   - "call X and tell them..."
+   - "make a call to X and say..."
+   - "make a phone call to X and tell them..."
+   - "phone X and say..."
+   - "dial X and tell them..."
 
 Respond with JSON with this structure:
 { 
@@ -42,7 +48,15 @@ Output: {
   "error": null
 }
 
-Input: "call John and tell him the meeting is tomorrow"
+Input: "make a phone call to Aadidev and say we have job vacancy available for you"
+Output: {
+  "type": "call",
+  "contacts": ["Aadidev"],
+  "message": "we have job vacancy available for you",
+  "error": null
+}
+
+Input: "phone John and tell him the meeting is tomorrow"
 Output: {
   "type": "call",
   "contacts": ["John"],
@@ -60,6 +74,8 @@ Output: {
 
 Handle various separators: "and", ",", "," + "and"
 Handle various message starters: "say", "tell them", "tell him", "tell her", "inform them"
+
+IMPORTANT: Always interpret queries that start with "make a call", "make a phone call", "phone", or "dial" as call requests.
 
 If the input is not a call request or cannot be parsed, set error field.
 
@@ -97,16 +113,26 @@ function fallbackParseCallQuery(input: string): ParsedCallQuery {
   
   // Try to match various call patterns
   const patterns = [
+    // Original patterns
     /call\s+(.+?)\s+and\s+say\s+(.+)/i,
     /call\s+(.+?)\s+and\s+tell\s+(?:them|him|her)\s+(.+)/i,
     /call\s+(.+?)\s+and\s+inform\s+(?:them|him|her)\s+(.+)/i,
     /call\s+(.+?)\s+(?:to\s+)?say\s+(.+)/i,
-    /call\s+(.+?)\s+(?:to\s+)?tell\s+(?:them|him|her)\s+(.+)/i
+    /call\s+(.+?)\s+(?:to\s+)?tell\s+(?:them|him|her)\s+(.+)/i,
+    
+    // Additional patterns for "make a call" and similar variations
+    /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+and\s+say\s+(.+)/i,
+    /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+and\s+tell\s+(?:them|him|her)\s+(.+)/i,
+    /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+(?:to\s+)?say\s+(.+)/i,
+    /make\s+(?:a\s+)?(?:phone\s+)?call\s+(?:to\s+)?(.+?)\s+(?:to\s+)?tell\s+(?:them|him|her)\s+(.+)/i,
+    /phone\s+(.+?)\s+(?:and|to)\s+(?:say|tell|inform)\s+(.+)/i,
+    /dial\s+(.+?)\s+(?:and|to)\s+(?:say|tell|inform)\s+(.+)/i
   ];
   
   for (const pattern of patterns) {
     const match = input.match(pattern);
     if (match) {
+      console.log(`[CALL-PARSER] Matched pattern: ${pattern}`);
       const contactsStr = match[1].trim();
       const message = match[2].trim();
       
@@ -117,6 +143,8 @@ function fallbackParseCallQuery(input: string): ParsedCallQuery {
         .filter(name => name.length > 0);
       
       if (contacts.length > 0 && message.length > 0) {
+        console.log(`[CALL-PARSER] Extracted contacts: ${contacts.join(', ')}`);
+        console.log(`[CALL-PARSER] Extracted message: ${message}`);
         return {
           type: "call",
           contacts,
@@ -126,6 +154,7 @@ function fallbackParseCallQuery(input: string): ParsedCallQuery {
     }
   }
   
+  console.log(`[CALL-PARSER] Could not parse call request: ${input}`);
   return {
     type: "call",
     contacts: [],
