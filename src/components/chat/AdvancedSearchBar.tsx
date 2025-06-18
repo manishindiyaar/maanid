@@ -422,7 +422,7 @@ const AdvancedSearchBar = ({
                   onChange={handleInputChange}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                  placeholder="Search, type a command, or make a call (e.g., 'Make a phone call to Manish and say hello')"
+                  placeholder="Start prompting to our AI"
                   className="w-full p-3 rounded-lg spotlight-input focus:outline-none"
                   disabled={isProcessing || isCallProcessing}
                 />

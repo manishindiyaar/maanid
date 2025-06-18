@@ -276,6 +276,17 @@ const DashboardContainer = () => {
                       : msg
                   );
                 });
+
+                // If this update marks a previously unread customer message as viewed, decrement unread counter
+                if (payload.new.is_viewed === true && payload.new.is_from_customer === true) {
+                  setCustomers(prev => prev.map(c => {
+                    if (c.id !== selectedCustomerId) return c;
+                    // Update corresponding message in customer's messages array
+                    const updatedMsgs = c.messages?.map(m => m.id === payload.new.id ? { ...m, is_viewed: true } : m);
+                    const newCount = (c.unreadCount || 0) - 1;
+                    return { ...c, unreadCount: newCount < 0 ? 0 : newCount, messages: updatedMsgs };
+                  }));
+                }
               }
             } else if (payload.eventType === 'DELETE') {
               console.log('Message deleted:', payload);
@@ -646,7 +657,17 @@ const DashboardContainer = () => {
   const handleContactSelect = (contactId: string | null) => {
     setSelectedCustomerId(contactId);
     setQueryResults(null); // Close the results dialog
-    
+
+    // If we just opened a conversation, optimistically clear its unread counter and mark messages viewed locally
+    if (contactId) {
+      setCustomers(prev => prev.map(c => {
+        if (c.id !== contactId) return c;
+        const updatedMessages = c.messages?.map(m => (
+          m.is_from_customer ? { ...m, is_viewed: true } : m
+        ));
+        return { ...c, unreadCount: 0, messages: updatedMessages };
+      }));
+    }
     // Only try to scroll if we have a valid contactId
     if (contactId) {
       const contactElement = document.querySelector(`[data-customer-id="${contactId}"]`);
