@@ -20,6 +20,7 @@ import QueryResultsOverlay from "./QueryResultsOverlay";
 import SetupAgent from "./../agent/SetupAgent";
 import CombinedMessagingPanel from "./../MsgPanel";
 import { TealSidebar } from "../sidebar/TealSidebar";
+import TelegramConnector from "../bots/TelegramConnector";
 
 const DashboardContainer = () => {
   const router = useRouter();
@@ -936,6 +937,11 @@ const DashboardContainer = () => {
           Admin
         </div>
       )}
+      
+      {/* Telegram Connector */}
+      <div className={`absolute top-2 ${isAdmin ? 'right-24' : 'right-4'} z-20`}>
+        <TelegramConnector className="shadow-xl" />
+      </div>
       
       {/* Sidebar */}
       {!isFullScreen && <TealSidebar />}

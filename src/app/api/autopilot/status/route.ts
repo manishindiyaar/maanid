@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAutopilotStatus, setAutopilotStatus } from '@/lib/autopilot/state';
+import { getAutopilotStatus, setAutopilotStatus } from '../../../../lib/autopilot/state';
 
 
 // GET: Get current autopilot status
