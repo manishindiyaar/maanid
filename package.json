@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.9",
+    "@aws-sdk/client-bedrock": "^3.831.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.830.0",
     "@google/generative-ai": "^0.24.0",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-dialog": "^1.0.5",

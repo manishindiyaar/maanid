@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { parseNaturalLanguageQuery } from '@/lib/anthropic/client';
-import { getServerSupabaseClient } from '@/lib/supabase/server';
+import { parseNaturalLanguageQuery } from '../anthropic/client';
+import { getServerSupabaseClient } from '../../../lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {

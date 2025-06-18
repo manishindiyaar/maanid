@@ -169,7 +169,7 @@ export async function POST(request: Request) {
       
       // Fallback option - use a placeholder email based on project ref
       if (!userEmail && tokenData.project_ref) {
-        userEmail = `user_${tokenData.project_ref}@example.com`;
+        let userEmail = `user_${tokenData.project_ref}@example.com`;
         console.log(`📝 Using placeholder email: ${userEmail}`);
       }
       
