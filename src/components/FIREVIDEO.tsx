@@ -82,7 +82,7 @@ const EpicVideoComponent = () => {
             </div>
             
             {/* Bold neon border */}
-            <div className="absolute inset-0 z-10 rounded-b-xl">
+            <div className="absolute inset-0 z-10 rounded-b-xl pointer-events-none">
               <div className="absolute inset-0 border-4 border-teal-500/50 rounded-b-xl"></div>
               <div className="neon-border"></div>
             </div>
