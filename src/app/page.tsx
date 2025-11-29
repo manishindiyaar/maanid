@@ -51,8 +51,9 @@ export default function LandingPage() {
       {/* Transparency Layer Section */}
       <TransparencyLayer />
 
+      {/* 
       <EpicVideoComponent />
-
+*/}
 
       {/* Social Proof Quote */}
       {/* <SocialProofQuote /> */}
