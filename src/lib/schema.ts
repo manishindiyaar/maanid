@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS contacts (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   contact_info TEXT NOT NULL,
+  platform TEXT DEFAULT 'web', -- 'whatsapp', 'telegram', 'web'
+  external_id TEXT, -- Phone number or Telegram ID
+  metadata JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -18,11 +21,15 @@ CREATE TABLE IF NOT EXISTS messages (
   id SERIAL PRIMARY KEY,
   contact_id INTEGER NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
+  role TEXT DEFAULT 'user', -- 'user' or 'assistant'
+  metadata JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create index on contacts name for faster searches
 CREATE INDEX IF NOT EXISTS contacts_name_idx ON contacts(name);
+CREATE INDEX IF NOT EXISTS contacts_platform_idx ON contacts(platform);
+CREATE INDEX IF NOT EXISTS contacts_external_id_idx ON contacts(external_id);
 
 -- Create index on messages contact_id for faster joins
 CREATE INDEX IF NOT EXISTS messages_contact_id_idx ON messages(contact_id);
